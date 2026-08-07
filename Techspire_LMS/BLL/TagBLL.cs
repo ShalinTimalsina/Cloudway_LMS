@@ -8,10 +8,12 @@ namespace Techspire_LMS.BLL
 {
     public class TagBLL
     {
+       
         private readonly TagDAL _dal = new TagDAL();
 
         public List<Tag> GetAll() { return _dal.SelectAll(); }
         public List<Tag> GetByCourse(int courseId) { return _dal.SelectByCourse(courseId); }
+        public Tag GetById(int tagId) { return tagId <= 0 ? null : _dal.SelectById(tagId); }
 
         public int Add(string tagName)
         {

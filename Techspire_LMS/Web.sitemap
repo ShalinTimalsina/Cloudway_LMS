@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0">
+  <!--
+    Powers the SiteMapPath breadcrumb control on Site.master and Admin.master.
+    Every url must be UNIQUE across this whole file — the default
+    XmlSiteMapProvider throws a startup error on a duplicate, which is why
+    the Admin node's own url ("ManageCategories.aspx") isn't repeated as a
+    child underneath it.
+
+    LIMITATION: this is a static file, so a dynamic page like
+    CourseDetails.aspx or Member/QuizPage shows the same breadcrumb label
+    for every course/quiz — it doesn't know "which" course you're on. Fixing
+    that needs a dynamic SiteMapProvider (one that reads titles from the
+    database), which is a good, well-scoped extension to describe rather
+    than build into the base template.
+  -->
+  <siteMapNode title="Home" description="Home" url="~/Pages/Default.aspx">
+    <siteMapNode title="Courses" description="Courses" url="~/Pages/Courses.aspx">
+      <siteMapNode title="Course Details" description="Course Details" url="~/Pages/CourseDetails.aspx" />
+    </siteMapNode>
+    <siteMapNode title="Contact Us" description="Contact" url="~/Pages/Contact.aspx" />
+    <siteMapNode title="Log In" description="Log In" url="~/Account/Login.aspx" />
+    <siteMapNode title="Register" description="Register" url="~/Account/Register.aspx" />
+    <siteMapNode title="Take Quiz" description="Take Quiz" url="~/Member/Quiz.aspx" />
+    <siteMapNode title="Admin" description="Admin" url="~/Admin/ManageCategories.aspx">
+      <siteMapNode title="Courses" description="Manage Courses" url="~/Admin/ManageCourses.aspx" />
+      <siteMapNode title="Lessons" description="Manage Lessons" url="~/Admin/ManageLessons.aspx" />
+      <siteMapNode title="Quizzes" description="Manage Quizzes" url="~/Admin/ManageQuizzes.aspx" />
+      <siteMapNode title="Users" description="Manage Users" url="~/Admin/ManageUsers.aspx" />
+      <siteMapNode title="Feedback" description="Feedback" url="~/Admin/ViewFeedback.aspx" />
+    </siteMapNode>
+  </siteMapNode>
+</siteMap>

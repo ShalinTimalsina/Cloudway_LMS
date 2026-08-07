@@ -31,6 +31,16 @@ namespace Techspire_LMS.BLL
             return _dal.SelectPublished(categoryId, tagId, search);
         }
 
+        /// <summary>Clamps page size so a tampered/forged form value (or a
+        /// bug) can't ask the database for a million-row page.</summary>
+        public List<Course> GetPublicPaged(
+            int? categoryId, int? tagId, string search, int pageNumber, int pageSize, out int totalCount)
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1 || pageSize > 50) pageSize = 9;
+            return _dal.SelectPublishedPaged(categoryId, tagId, search, pageNumber, pageSize, out totalCount);
+        }
+
         public List<Course> GetAllForAdmin() { return _dal.SelectAll(); }
 
         public Course GetById(int courseId)
@@ -147,4 +157,4 @@ namespace Techspire_LMS.BLL
                 throw new ValidationException("Short description must be 300 characters or fewer.");
         }
     }
-}
+    }

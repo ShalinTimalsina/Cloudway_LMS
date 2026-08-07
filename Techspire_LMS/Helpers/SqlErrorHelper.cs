@@ -1,5 +1,5 @@
 using System.Data.SqlClient;
-using LearningPlatform.BLL;
+using Techspire_LMS.BLL;
 
 namespace Techspire_LMS.Helpers
 {

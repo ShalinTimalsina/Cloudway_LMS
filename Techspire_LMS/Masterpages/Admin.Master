@@ -1,0 +1,52 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Admin.master.cs" Inherits="Techspire_LMS.Masterpages.Admin" %>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%: Page.Title %> | Admin | Learning Platform</title>
+    <link rel="stylesheet" href="<%= ResolveUrl("~/Content/site.css") %>" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+    <form id="frmAdmin" runat="server">
+        <header class="site-header">
+            <div class="container header-inner">
+                <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>" class="brand">
+                    <span class="brand-text">Learning Platform — Admin</span>
+                </a>
+                <span class="nav-welcome">
+                    <asp:Literal ID="litAdminName" runat="server" /> ·
+                    <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click"
+                                    CausesValidation="false" ForeColor="White">Logout</asp:LinkButton>
+                </span>
+            </div>
+        </header>
+
+        <div class="admin-shell">
+            <aside class="admin-sidebar">
+                <a href="<%= ResolveUrl("~/Admin/ManageCategories.aspx") %>">Categories</a>
+                <a href="<%= ResolveUrl("~/Admin/ManageCourses.aspx") %>">Courses</a>
+                <a href="<%= ResolveUrl("~/Admin/ManageLessons.aspx") %>">Lessons</a>
+                <a href="<%= ResolveUrl("~/Admin/ManageQuizzes.aspx") %>">Quizzes</a>
+                <a href="<%= ResolveUrl("~/Admin/ManageUsers.aspx") %>">Users</a>
+                <a href="<%= ResolveUrl("~/Admin/ViewFeedback.aspx") %>">Feedback</a>
+                <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>">&larr; Back to site</a>
+            </aside>
+            <div class="admin-content">
+                <div class="breadcrumb-bar" style="padding-left:0;">
+                    <asp:SiteMapPath ID="SiteMapPath1" runat="server"
+                                     PathSeparator=" &rsaquo; " RenderCurrentNodeAsLink="false" SkipLinkText=""
+                                     CurrentNodeStyle-CssClass="breadcrumb-current" />
+                </div>
+                <asp:ContentPlaceHolder ID="AdminContent" runat="server" />
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+

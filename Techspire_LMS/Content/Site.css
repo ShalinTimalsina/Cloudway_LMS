@@ -1,21 +1,511 @@
-﻿/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    margin-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+﻿/* ============================================================================
+   Base Template — site.css
+   Design tokens as CSS custom properties: rebrand the whole template by
+   changing the values in :root. Generic on purpose — no domain-specific
+   colours or imagery baked in, so a programming-platform team and a
+   cybersecurity-platform team can both start from this file unmodified.
+   ============================================================================ */
+
+:root {
+    --brand: #1b3a6b;
+    --brand-dark: #122747;
+    --brand-light: #eef3fa;
+    --accent: #2f8f5b;
+    --danger: #b3261e;
+    --danger-bg: #fbeaea;
+    --success: #1e7a3d;
+    --success-bg: #e8f6ec;
+    --text: #1f2430;
+    --text-muted: #5b6472;
+    --border: #dde2ea;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --font: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
+* {
+    box-sizing: border-box;
 }
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-    .body-content {
+body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--text);
+    background: #f7f8fb;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+a {
+    color: var(--brand);
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 999;
+}
+
+    .skip-link:focus {
+        left: 8px;
+        top: 8px;
+        background: #fff;
+        padding: 8px 12px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+/* ---------- Header / Nav ---------- */
+.site-header {
+    background: var(--brand);
+    color: #fff;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #fff;
+}
+
+    .brand:hover {
+        text-decoration: none;
+        opacity: 0.9;
+    }
+
+.brand-text {
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.site-nav {
+    background: var(--brand-dark);
+}
+
+.nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    align-items: center;
+}
+
+    .nav-list a {
+        color: #fff;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+        .nav-list a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+.btn-nav {
+    background: var(--accent);
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--radius);
+}
+
+    .btn-nav:hover {
+        opacity: 0.9;
+        text-decoration: none;
+    }
+
+.nav-welcome {
+    color: #fff;
+    opacity: 0.85;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-bar {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.breadcrumb-current {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* ---------- Layout ---------- */
+.site-main {
+    min-height: 60vh;
+    padding: 1.5rem 1.25rem 3rem;
+}
+
+.page-title {
+    margin: 0 0 0.25rem;
+    font-size: 1.6rem;
+}
+
+.page-subtitle {
+    color: var(--text-muted);
+    margin: 0 0 1.5rem;
+}
+
+/* ---------- Cards / grid ---------- */
+.card-grid {
+    display: grid;
+    gap: 1.1rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-thumb {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    background: var(--brand-light);
+}
+
+.card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.card-title {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.card-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--text);
+    flex: 1;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.tag {
+    background: var(--brand-light);
+    color: var(--brand);
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: var(--brand-light);
+    color: var(--brand);
+}
+
+.badge-draft {
+    background: #fbeee0;
+    color: #92590c;
+}
+
+/* ---------- Forms ---------- */
+.form-field {
+    margin-bottom: 1rem;
+}
+
+    .form-field label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+    .form-control:focus {
+        outline: 2px solid var(--brand);
+        outline-offset: 1px;
+    }
+
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.field-error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.form-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    max-width: 520px;
+    box-shadow: var(--shadow);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--brand);
+    background: var(--brand);
+    color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+    .btn:hover {
+        background: var(--brand-dark);
+        border-color: var(--brand-dark);
+        text-decoration: none;
+    }
+
+.btn-outline {
+    background: #fff;
+    color: var(--brand);
+}
+
+    .btn-outline:hover {
+        background: var(--brand-light);
+    }
+
+.btn-danger {
+    background: var(--danger);
+    border-color: var(--danger);
+}
+
+    .btn-danger:hover {
+        background: #8f1e18;
+        border-color: #8f1e18;
+    }
+
+.btn-small {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.82rem;
+}
+
+.btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---------- Alerts ---------- */
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.alert-error {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid #f0c4c1;
+}
+
+.alert-success {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid #bfe3cb;
+}
+
+/* ---------- Tables (admin grids) ---------- */
+.table-admin {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+    .table-admin th, .table-admin td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9rem;
+    }
+
+    .table-admin th {
+        background: var(--brand-light);
+        color: var(--brand);
+        font-weight: 600;
+    }
+
+    .table-admin tr:hover td {
+        background: #fafbfd;
+    }
+
+.admin-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+/* ---------- Admin shell ---------- */
+.admin-shell {
+    display: flex;
+    min-height: 70vh;
+}
+
+.admin-sidebar {
+    width: 220px;
+    background: var(--brand-dark);
+    color: #fff;
+    flex-shrink: 0;
+    padding: 1.25rem 0;
+}
+
+    .admin-sidebar a {
+        display: block;
+        color: #fff;
+        opacity: 0.85;
+        padding: 0.6rem 1.25rem;
+        font-size: 0.92rem;
+    }
+
+        .admin-sidebar a:hover, .admin-sidebar a.active {
+            opacity: 1;
+            background: rgba(255,255,255,0.08);
+            text-decoration: none;
+        }
+
+.admin-content {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* ---------- Quiz ---------- */
+.quiz-question {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #fff;
+}
+
+    .quiz-question h4 {
+        margin: 0 0 0.6rem;
+    }
+
+.quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+}
+
+.quiz-result {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.quiz-score {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--brand);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+    background: var(--brand-dark);
+    color: #fff;
+    margin-top: 2rem;
+}
+
+.footer-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    padding: 2rem 1.25rem 1rem;
+}
+
+    .footer-grid h3 {
+        font-size: 0.95rem;
+        margin: 0 0 0.6rem;
+    }
+
+    .footer-grid ul {
+        list-style: none;
+        margin: 0;
         padding: 0;
+    }
+
+    .footer-grid a {
+        color: #fff;
+        opacity: 0.8;
+    }
+
+.footer-copy {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    padding: 0.8rem 0 1.2rem;
+}
+
+@media (max-width: 720px) {
+    .admin-shell {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        width: 100%;
     }
 }

@@ -55,7 +55,81 @@ namespace Techspire_LMS.Data_Access_Layer
         }
 
         // ==================================================================
-        // READ — featured courses for the home page
+        // READ — same filters as SelectPublished, but SQL-level paged via
+        // OFFSET/FETCH instead of returning the whole result set. Used by the
+        // public catalogue, which could realistically grow to hundreds of
+        // rows — unlike the admin grids (see ManageCourses.aspx's in-memory
+        // GridView paging), pulling every row on every page load here would
+        // get slower as the catalogue grows, not just look worse.
+        // ==================================================================
+        public List<Course> SelectPublishedPaged(
+            int? categoryId, int? tagId, string search, int pageNumber, int pageSize, out int totalCount)
+        {
+            List<Course> pagedList = new List<Course>();
+
+            const string countSql = @"
+                SELECT COUNT(DISTINCT c.CourseID)
+                FROM    Courses c
+                        LEFT JOIN CourseTags ct ON c.CourseID = ct.CourseID
+                WHERE   c.IsPublished = 1
+                  AND   (@CategoryID IS NULL OR c.CategoryID = @CategoryID)
+                  AND   (@TagID IS NULL OR ct.TagID = @TagID)
+                  AND   (@Search IS NULL OR c.Title LIKE '%' + @Search + '%'
+                                         OR c.ShortDescription LIKE '%' + @Search + '%');";
+
+            const string pageSql = @"
+                SELECT DISTINCT
+                        c.CourseID, c.Title, c.ShortDescription, c.FullDescription,
+                        c.CategoryID, c.ThumbnailPath, c.DifficultyLevel,
+                        c.DurationMinutes, c.IsPublished, c.CreatedBy, c.CreatedAt, c.UpdatedAt,
+                        cat.CategoryName
+                FROM    Courses c
+                        INNER JOIN Categories cat ON c.CategoryID = cat.CategoryID
+                        LEFT JOIN  CourseTags ct  ON c.CourseID = ct.CourseID
+                WHERE   c.IsPublished = 1
+                  AND   (@CategoryID IS NULL OR c.CategoryID = @CategoryID)
+                  AND   (@TagID IS NULL OR ct.TagID = @TagID)
+                  AND   (@Search IS NULL OR c.Title LIKE '%' + @Search + '%'
+                                         OR c.ShortDescription LIKE '%' + @Search + '%')
+                ORDER BY c.CreatedAt DESC
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+            // ORDER BY is mandatory before OFFSET/FETCH in SQL Server — a
+            // paged query needs a stable sort or you can get the same row
+            // appearing on two different pages if the query plan shifts
+            // between requests. CreatedAt works here because it's set once
+            // at insert and never changes.
+
+            using (SqlConnection con = DbHelper.GetConnection())
+            {
+                con.Open();
+                string trimmedSearch = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+
+                using (SqlCommand countCmd = DbHelper.CreateCommand(con, countSql))
+                {
+                    DbHelper.AddParam(countCmd, "@CategoryID", categoryId);
+                    DbHelper.AddParam(countCmd, "@TagID", tagId);
+                    DbHelper.AddParam(countCmd, "@Search", trimmedSearch);
+                    totalCount = (int)countCmd.ExecuteScalar();
+                }
+
+                using (SqlCommand cmd = DbHelper.CreateCommand(con, pageSql))
+                {
+                    DbHelper.AddParam(cmd, "@CategoryID", categoryId);
+                    DbHelper.AddParam(cmd, "@TagID", tagId);
+                    DbHelper.AddParam(cmd, "@Search", trimmedSearch);
+                    DbHelper.AddParam(cmd, "@Offset", (pageNumber - 1) * pageSize);
+                    DbHelper.AddParam(cmd, "@PageSize", pageSize);
+
+                    using (SqlDataReader r = cmd.ExecuteReader())
+                    {
+                        while (r.Read()) pagedList.Add(Map(r));
+                    }
+                }
+            }
+
+            return pagedList;
+        }
+
         // ==================================================================
         public List<Course> SelectFeatured(int count)
         {
@@ -111,7 +185,7 @@ namespace Techspire_LMS.Data_Access_Layer
                     while (r.Read())
                     {
                         Course c = Map(r);
-                        c.CreatedByName  = DbHelper.GetString(r, "CreatedByName");
+                        c.CreatedByName = DbHelper.GetString(r, "CreatedByName");
                         c.EnrolmentCount = DbHelper.GetInt(r, "EnrolmentCount");
                         list.Add(c);
                     }
@@ -226,19 +300,19 @@ namespace Techspire_LMS.Data_Access_Layer
         {
             return new Course
             {
-                CourseID         = DbHelper.GetInt(r, "CourseID"),
-                Title            = DbHelper.GetString(r, "Title"),
+                CourseID = DbHelper.GetInt(r, "CourseID"),
+                Title = DbHelper.GetString(r, "Title"),
                 ShortDescription = DbHelper.GetString(r, "ShortDescription"),
-                FullDescription  = HasColumn(r, "FullDescription") ? DbHelper.GetString(r, "FullDescription") : null,
-                CategoryID       = DbHelper.GetInt(r, "CategoryID"),
-                ThumbnailPath    = DbHelper.GetString(r, "ThumbnailPath"),
-                DifficultyLevel  = DbHelper.GetString(r, "DifficultyLevel"),
-                DurationMinutes  = DbHelper.GetNullableInt(r, "DurationMinutes"),
-                IsPublished      = DbHelper.GetBool(r, "IsPublished"),
-                CreatedBy        = DbHelper.GetInt(r, "CreatedBy"),
-                CreatedAt        = DbHelper.GetDate(r, "CreatedAt"),
-                UpdatedAt        = DbHelper.GetDate(r, "UpdatedAt"),
-                CategoryName     = DbHelper.GetString(r, "CategoryName")
+                FullDescription = HasColumn(r, "FullDescription") ? DbHelper.GetString(r, "FullDescription") : null,
+                CategoryID = DbHelper.GetInt(r, "CategoryID"),
+                ThumbnailPath = DbHelper.GetString(r, "ThumbnailPath"),
+                DifficultyLevel = DbHelper.GetString(r, "DifficultyLevel"),
+                DurationMinutes = DbHelper.GetNullableInt(r, "DurationMinutes"),
+                IsPublished = DbHelper.GetBool(r, "IsPublished"),
+                CreatedBy = DbHelper.GetInt(r, "CreatedBy"),
+                CreatedAt = DbHelper.GetDate(r, "CreatedAt"),
+                UpdatedAt = DbHelper.GetDate(r, "UpdatedAt"),
+                CategoryName = DbHelper.GetString(r, "CategoryName")
             };
         }
 

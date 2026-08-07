@@ -1,0 +1,80 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Techspire_LMS.Masterpages.Site" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%: Page.Title %> | Learning Platform</title>
+
+    <link rel="stylesheet" href="<%= ResolveUrl("~/Content/site.css") %>" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+    <form id="frmMain" runat="server">
+        <a class="skip-link" href="#main">Skip to main content</a>
+
+        <header class="site-header">
+            <div class="container header-inner">
+                <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>" class="brand">
+                    <span class="brand-text">Learning Platform</span>
+                </a>
+            </div>
+        </header>
+
+        <nav class="site-nav" aria-label="Primary">
+            <div class="container">
+                <ul class="nav-list">
+                    <li><a href="<%= ResolveUrl("~/Pages/Default.aspx") %>">Home</a></li>
+                    <li><a href="<%= ResolveUrl("~/Pages/Courses.aspx") %>">Courses</a></li>
+
+                    <asp:PlaceHolder ID="phGuest" runat="server">
+                        <li><a href="<%= ResolveUrl("~/Account/Login.aspx") %>">Login</a></li>
+                        <li><a class="btn-nav" href="<%= ResolveUrl("~/Account/Register.aspx") %>">Register</a></li>
+                    </asp:PlaceHolder>
+
+                    <asp:PlaceHolder ID="phLoggedIn" runat="server" Visible="false">
+                        <li><a href="<%= ResolveUrl("~/Member/MyLearning.aspx") %>">My Learning</a></li>
+                        <li><a href="<%= ResolveUrl("~/Account/Profile.aspx") %>">Profile</a></li>
+                        <li><span class="nav-welcome">Hi, <asp:Literal ID="litWelcome" runat="server" /></span></li>
+                        <asp:PlaceHolder ID="phAdmin" runat="server" Visible="false">
+                            <li><a href="<%= ResolveUrl("~/Admin/ManageCategories.aspx") %>">Admin</a></li>
+                        </asp:PlaceHolder>
+                        <li>
+                            <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click"
+                                            CausesValidation="false">Logout</asp:LinkButton>
+                        </li>
+                    </asp:PlaceHolder>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="breadcrumb-bar container">
+            <asp:SiteMapPath ID="SiteMapPath1" runat="server"
+                             PathSeparator=" &rsaquo; " RenderCurrentNodeAsLink="false" SkipLinkText=""
+                             CurrentNodeStyle-CssClass="breadcrumb-current" />
+        </div>
+
+        <main id="main" class="container site-main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </main>
+
+        <footer class="site-footer">
+            <div class="container footer-grid">
+                <section>
+                    <h3>Learning Platform</h3>
+                    <p style="opacity:.8; font-size:.85rem;">A generic base template — retarget the seed data for your subject.</p>
+                </section>
+                <section>
+                    <h3>Quick links</h3>
+                    <ul>
+                        <li><a href="<%= ResolveUrl("~/Pages/Courses.aspx") %>">All courses</a></li>
+                        <li><a href="<%= ResolveUrl("~/Pages/Contact.aspx") %>">Contact us</a></li>
+                    </ul>
+                </section>
+            </div>
+            <p class="footer-copy">&copy; <%= DateTime.Now.Year %> Learning Platform</p>
+        </footer>
+    </form>
+</body>
+</html>

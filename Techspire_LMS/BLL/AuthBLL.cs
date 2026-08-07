@@ -29,6 +29,15 @@ namespace Techspire_LMS.BLL
         private static readonly Regex EmailPattern =
             new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
+        // Login lockout — a lightweight defence against password guessing,
+        // not a substitute for a real rate limiter (which would also cover
+        // an attacker spreading guesses across many accounts, not just
+        // hammering one). Five wrong passwords locks the ACCOUNT for 15
+        // minutes; the counter resets to zero on either a successful login
+        // or a lockout being triggered, so the next window starts fresh.
+        private const int MaxFailedAttempts = 5;
+        private static readonly System.TimeSpan LockoutDuration = System.TimeSpan.FromMinutes(15);
+
         // ================================================================
         // REGISTER
         // ================================================================
@@ -85,9 +94,18 @@ namespace Techspire_LMS.BLL
         // LOGIN
         // ================================================================
         /// <summary>
-        /// Throws the SAME message whether the email doesn't exist or the
-        /// password is wrong — telling an attacker which one it was ("no
-        /// account with that email") is a user-enumeration leak.
+        /// Throws the SAME message for "no such email" and "wrong password"
+        /// — telling an attacker which one it was is a user-enumeration
+        /// leak. The lockout message below is a DELIBERATE, narrower
+        /// exception to that rule: once someone is locked out, saying so
+        /// (rather than still claiming "invalid email or password") is more
+        /// honest to a real user who's about to be confused why their
+        /// correct password "isn't working" — and it only reveals that SOME
+        /// account with that email exists and has recently failed several
+        /// times, not which one of your specific guesses was wrong. That's
+        /// a reasonable trade worth naming explicitly rather than making
+        /// silently — most real-world systems (GitHub included) make the
+        /// same call.
         /// </summary>
         public User Login(string email, string password)
         {
@@ -96,9 +114,33 @@ namespace Techspire_LMS.BLL
 
             User u = _userDal.SelectByEmail(email.Trim().ToLowerInvariant());
 
-            if (u == null || !u.IsActive || !PasswordHelper.Verify(password, u.PasswordSalt, u.PasswordHash))
+            if (u == null || !u.IsActive)
                 throw new ValidationException("Invalid email or password.");
 
+            if (u.LockoutEndUtc.HasValue && u.LockoutEndUtc.Value > System.DateTime.UtcNow)
+            {
+                int minutesLeft = (int)System.Math.Ceiling((u.LockoutEndUtc.Value - System.DateTime.UtcNow).TotalMinutes);
+                throw new ValidationException(string.Format(
+                    "Too many failed attempts. Try again in {0} minute{1}.",
+                    minutesLeft, minutesLeft == 1 ? "" : "s"));
+            }
+
+            if (!PasswordHelper.Verify(password, u.PasswordSalt, u.PasswordHash))
+            {
+                int newCount = u.FailedLoginAttempts + 1;
+                System.DateTime? lockoutEnd = null;
+
+                if (newCount >= MaxFailedAttempts)
+                {
+                    lockoutEnd = System.DateTime.UtcNow.Add(LockoutDuration);
+                    newCount = 0; // starts counting fresh once the lockout expires
+                }
+
+                _userDal.RecordFailedLogin(u.UserID, newCount, lockoutEnd);
+                throw new ValidationException("Invalid email or password.");
+            }
+
+            _userDal.ResetFailedLogins(u.UserID);
             _userDal.UpdateLastLogin(u.UserID);
             SetSession(u);
             return u;
@@ -117,6 +159,16 @@ namespace Techspire_LMS.BLL
             HttpContext.Current.Session["FullName"] = u.FullName;
             HttpContext.Current.Session["RoleID"] = u.RoleID;
             HttpContext.Current.Session["RoleName"] = u.RoleName;
+        }
+
+        /// <summary>Called after a profile edit changes the display name —
+        /// the nav's "Hi, <name>" (see Site.master.cs) reads Session, so a
+        /// name change needs to update Session too or the header would keep
+        /// showing the OLD name until the next login. Kept here, not in
+        /// Profile.aspx.cs, so Session access stays in exactly one class.</summary>
+        public static void RefreshSessionName(string fullName)
+        {
+            if (IsLoggedIn) HttpContext.Current.Session["FullName"] = fullName;
         }
 
         // ================================================================

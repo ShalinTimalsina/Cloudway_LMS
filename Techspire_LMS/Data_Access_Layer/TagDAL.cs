@@ -26,6 +26,22 @@ namespace Techspire_LMS.Data_Access_Layer
             return list;
         }
 
+        public Tag SelectById(int tagId)
+        {
+            const string sql = "SELECT TagID, TagName FROM Tags WHERE TagID = @TagID;";
+
+            using (SqlConnection con = DbHelper.GetConnection())
+            using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))
+            {
+                DbHelper.AddParam(cmd, "@TagID", tagId);
+                con.Open();
+                using (SqlDataReader r = cmd.ExecuteReader())
+                {
+                    return r.Read() ? Map(r) : null;
+                }
+            }
+        }
+
         public List<Tag> SelectByCourse(int courseId)
         {
             List<Tag> list = new List<Tag>();
@@ -110,7 +126,7 @@ namespace Techspire_LMS.Data_Access_Layer
         {
             return new Tag
             {
-                TagID   = DbHelper.GetInt(r, "TagID"),
+                TagID = DbHelper.GetInt(r, "TagID"),
                 TagName = DbHelper.GetString(r, "TagName")
             };
         }
