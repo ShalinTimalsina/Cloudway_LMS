@@ -30,7 +30,7 @@ namespace Techspire_LMS.Member
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litNoEnrollments;
+        protected global::System.Web.UI.WebControls.Panel litNoEnrollments;
 
         /// <summary>
         /// gvAttempts control.
@@ -48,6 +48,6 @@ namespace Techspire_LMS.Member
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litNoAttempts;
+        protected global::System.Web.UI.WebControls.Panel litNoAttempts;
     }
 }

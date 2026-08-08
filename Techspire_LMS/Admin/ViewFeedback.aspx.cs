@@ -25,6 +25,11 @@ namespace Techspire_LMS.Admin
             gvFeedback.DataBind();
             litEmpty.Visible = items.Count == 0;
         }
+        protected void gvFeedback_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvFeedback.PageIndex = e.NewPageIndex;
+            BindGrid();
+        }
 
         /// <summary>Bolds unread rows and hides the redundant "Mark read"
         /// button once a row is already read — small touch, but it's the
@@ -67,6 +72,8 @@ namespace Techspire_LMS.Admin
             }
 
             BindGrid();
+
+
         }
     }
 }

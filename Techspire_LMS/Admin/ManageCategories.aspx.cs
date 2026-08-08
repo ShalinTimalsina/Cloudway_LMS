@@ -92,6 +92,11 @@ namespace Techspire_LMS.Admin
         {
             ResetForm();
         }
+        protected void gvCategories_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvCategories.PageIndex = e.NewPageIndex;
+            BindGrid();
+        }
 
         private void ResetForm()
         {

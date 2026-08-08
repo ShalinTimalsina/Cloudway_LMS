@@ -26,9 +26,9 @@
         </ItemTemplate>
         <FooterTemplate></div></FooterTemplate>
     </asp:Repeater>
-    <asp:Literal ID="litNoEnrollments" runat="server" Visible="false">
+    <asp:Panel ID="litNoEnrollments" runat="server" Visible="false">
         <p>You haven't enrolled in any courses yet. <a href="<%= ResolveUrl("~/Pages/Courses.aspx") %>">Browse courses &rarr;</a></p>
-    </asp:Literal>
+    </asp:Panel>
 
     <h2 style="margin-top:2rem;">Quiz History</h2>
     <div class="admin-panel">
@@ -48,7 +48,9 @@
                 <asp:BoundField DataField="AttemptedAt" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
             </Columns>
         </asp:GridView>
-        <asp:Literal ID="litNoAttempts" runat="server" Visible="false"><p>No quiz attempts yet.</p></asp:Literal>
+        <asp:Panel ID="litNoAttempts" runat="server" Visible="false">
+    <p>No quiz attempts yet.</p>
+</asp:Panel>
     </div>
 </asp:Content>
 

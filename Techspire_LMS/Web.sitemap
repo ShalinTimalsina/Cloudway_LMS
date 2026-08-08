@@ -25,7 +25,7 @@
     <siteMapNode title="Admin" description="Admin" url="~/Admin/ManageCategories.aspx">
       <siteMapNode title="Courses" description="Manage Courses" url="~/Admin/ManageCourses.aspx" />
       <siteMapNode title="Lessons" description="Manage Lessons" url="~/Admin/ManageLessons.aspx" />
-      <siteMapNode title="Quizzes" description="Manage Quizzes" url="~/Admin/ManageQuizzes.aspx" />
+      <siteMapNode title="Quizzes" description="Manage Quizzes" url="~/Admin/ManageQuiz.aspx" />
       <siteMapNode title="Users" description="Manage Users" url="~/Admin/ManageUsers.aspx" />
       <siteMapNode title="Feedback" description="Feedback" url="~/Admin/ViewFeedback.aspx" />
     </siteMapNode>
