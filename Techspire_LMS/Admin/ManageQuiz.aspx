@@ -3,7 +3,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="AdminContent" runat="server">
     <h1 class="page-title">Quizzes</h1>
-    <p class="page-subtitle">Pick a course, then a quiz, then a question — each level manages the next.</p>
+    <p class="page-subtitle">Play and win, Folks</p>
     <asp:Literal ID="litMessage" runat="server" />
 
     <asp:HiddenField ID="hfQuizId" runat="server" Value="0" />

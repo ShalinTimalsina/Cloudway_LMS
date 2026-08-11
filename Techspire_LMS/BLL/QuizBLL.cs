@@ -134,6 +134,10 @@ namespace Techspire_LMS.BLL
         public void RemoveQuiz(int quizId)
         {
             if (quizId <= 0) throw new ValidationException("Invalid quiz.");
+
+            if (_quizDal.HasAttempts(quizId))
+                throw new ValidationException("This quiz has been attempted by learners and cannot be deleted. Deactivate it instead (uncheck 'Active').");
+
             if (!_quizDal.Delete(quizId)) throw new ValidationException("The quiz no longer exists.");
         }
 

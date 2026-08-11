@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Techspire_LMS.BLL;
 using Techspire_LMS.Models;
@@ -27,12 +23,27 @@ namespace Techspire_LMS.Admin
             }
         }
 
+        /// <summary>
+        /// Deliberately GetAll(), not GetActive(). The public catalogue
+        /// (Pages/Courses.aspx) correctly hides inactive categories from
+        /// guests — but THIS dropdown also has to represent whatever
+        /// category an EXISTING course already has, even if that category
+        /// was deactivated after the course was created. Using GetActive()
+        /// here means editing such a course throws
+        /// ArgumentOutOfRangeException the moment gvCourses_RowCommand
+        /// tries to set SelectedValue to a CategoryID that isn't in the
+        /// list — the value has to exist among the Items for
+        /// SelectedValue to succeed. Showing every category (with inactive
+        /// ones labelled) is what keeps editing old data possible.
+        /// </summary>
         private void BindCategoryDropdown()
         {
-            ddlCategory.DataSource = new CategoryBLL().GetActive();
-            ddlCategory.DataTextField = "CategoryName";
-            ddlCategory.DataValueField = "CategoryID";
-            ddlCategory.DataBind();
+            ddlCategory.Items.Clear();
+            foreach (var cat in new CategoryBLL().GetAll())
+            {
+                string text = cat.IsActive ? cat.CategoryName : cat.CategoryName + " (inactive)";
+                ddlCategory.Items.Add(new ListItem(text, cat.CategoryID.ToString()));
+            }
         }
 
         private void BindGrid()

@@ -16,7 +16,7 @@
         <header class="site-header">
             <div class="container header-inner">
                 <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>" class="brand">
-                    <span class="brand-text">Learning Platform — Admin</span>
+                    <span class="brand-text">Learning Platform Admin</span>
                 </a>
                 <span class="nav-welcome">
                     <asp:Literal ID="litAdminName" runat="server" /> ·

@@ -52,7 +52,7 @@
         </asp:Repeater>
 
         <asp:Literal ID="litEmpty" runat="server" Visible="false">
-            <p>No published courses yet — check back soon.</p>
+            <p>Check back soon, we will keep posting.</p>
         </asp:Literal>
     </section>
 </asp:Content>

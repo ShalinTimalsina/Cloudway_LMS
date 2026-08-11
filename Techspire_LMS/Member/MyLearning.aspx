@@ -5,7 +5,7 @@
     <h1 class="page-title">My Learning</h1>
 
     <h2>My Courses</h2>
-    <asp:Repeater ID="rptEnrollments" runat="server">
+    <asp:Repeater ID="rptEnrollments" runat="server" OnItemCommand="rptEnrollments_ItemCommand">
         <HeaderTemplate><div class="card-grid"></HeaderTemplate>
         <ItemTemplate>
             <div class="card">
@@ -21,14 +21,17 @@
                     </div>
                     <a class="btn btn-outline btn-small" style="margin-top:0.5rem;"
                        href="<%# ResolveUrl("~/Pages/CourseDetails.aspx?id=") + Eval("CourseID") %>">Continue</a>
+                    <asp:LinkButton runat="server" CommandName="Unenroll" CommandArgument='<%# Eval("EnrollmentID") %>'
+                                    CssClass="btn btn-danger btn-small" style="margin-top:0.5rem;"
+                                    OnClientClick="return confirm('Unenroll from this course? Your lesson progress will be reset your quiz history is kept.');">Unenroll</asp:LinkButton>
                 </div>
             </div>
         </ItemTemplate>
         <FooterTemplate></div></FooterTemplate>
     </asp:Repeater>
-    <asp:Panel ID="litNoEnrollments" runat="server" Visible="false">
-        <p>You haven't enrolled in any courses yet. <a href="<%= ResolveUrl("~/Pages/Courses.aspx") %>">Browse courses &rarr;</a></p>
-    </asp:Panel>
+   <asp:Panel ID="litNoEnrollments" runat="server" Visible="false">
+    <p>You haven't enrolled in any courses yet. <a href="<%= ResolveUrl("~/Pages/Courses.aspx") %>">Browse courses &rarr;</a></p>
+</asp:Panel>
 
     <h2 style="margin-top:2rem;">Quiz History</h2>
     <div class="admin-panel">
@@ -48,9 +51,6 @@
                 <asp:BoundField DataField="AttemptedAt" HeaderText="Date" DataFormatString="{0:yyyy-MM-dd HH:mm}" />
             </Columns>
         </asp:GridView>
-        <asp:Panel ID="litNoAttempts" runat="server" Visible="false">
-    <p>No quiz attempts yet.</p>
-</asp:Panel>
+        <asp:Panel ID="litNoAttempts" runat="server" Visible="false"><p>No quiz attempts yet.</p></asp:Panel>
     </div>
 </asp:Content>
-

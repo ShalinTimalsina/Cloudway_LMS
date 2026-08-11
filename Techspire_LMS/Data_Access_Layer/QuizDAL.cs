@@ -82,6 +82,19 @@ namespace Techspire_LMS.Data_Access_Layer
             }
         }
 
+        public bool HasAttempts(int quizId)
+        {
+            const string sql = "SELECT CASE WHEN EXISTS (SELECT 1 FROM QuizAttempts WHERE QuizID = @QuizID) THEN 1 ELSE 0 END;";
+
+            using (SqlConnection con = DbHelper.GetConnection())
+            using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))
+            {
+                DbHelper.AddParam(cmd, "@QuizID", quizId);
+                con.Open();
+                return (int)cmd.ExecuteScalar() == 1;
+            }
+        }
+
         public bool Delete(int quizId)
         {
             const string sql = "DELETE FROM Quizzes WHERE QuizID = @QuizID;";

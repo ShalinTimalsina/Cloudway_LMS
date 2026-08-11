@@ -74,9 +74,25 @@ namespace Techspire_LMS.BLL
                 throw new ValidationException("The enrolment no longer exists.");
         }
 
-        public void Unenroll(int enrollmentId)
+        /// <summary>
+        /// userId is REQUIRED and checked — never trust EnrollmentID alone.
+        /// It arrives at this method from a page's CommandArgument, which is
+        /// client-controlled data exactly like a query-string value: a
+        /// user could tamper with it to try unenrolling someone else. This
+        /// method confirms the enrollment actually belongs to the calling
+        /// user before deleting anything — the same IDOR discipline as
+        /// CourseDetails.aspx's enrol action (identity from Session,
+        /// ownership verified server-side, never assumed from what the
+        /// client sent).
+        /// </summary>
+        public void Unenroll(int userId, int enrollmentId)
         {
             if (enrollmentId <= 0) throw new ValidationException("Invalid enrolment.");
+
+            Enrollment enrollment = _dal.SelectByUser(userId).FirstOrDefault(e => e.EnrollmentID == enrollmentId);
+            if (enrollment == null)
+                throw new ValidationException("This enrolment doesn't belong to you, or no longer exists.");
+
             if (!_dal.Delete(enrollmentId)) throw new ValidationException("The enrolment no longer exists.");
         }
 

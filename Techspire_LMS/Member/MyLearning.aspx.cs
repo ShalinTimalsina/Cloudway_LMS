@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Techspire_LMS.BLL;
 
 namespace Techspire_LMS.Member
 {
     public partial class MyLearning : System.Web.UI.Page
     {
-        
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!AuthBLL.IsLoggedIn)
@@ -34,6 +28,29 @@ namespace Techspire_LMS.Member
             litNoEnrollments.Visible = enrollments.Count == 0;
         }
 
+        /// <summary>enrollmentId comes from the button's CommandArgument —
+        /// client-controlled, so it is NOT trusted alone. AuthBLL.CurrentUserId
+        /// (from Session) is what actually proves ownership; see the IDOR
+        /// note on EnrollmentBLL.Unenroll for why both are required.</summary>
+        protected void rptEnrollments_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName != "Unenroll") return;
+
+            int enrollmentId = int.Parse((string)e.CommandArgument);
+
+            try
+            {
+                new EnrollmentBLL().Unenroll(AuthBLL.CurrentUserId, enrollmentId);
+            }
+            catch (ValidationException)
+            {
+                // Enrolment already gone, or didn't belong to this user —
+                // either way, the grid below is about to re-show reality.
+            }
+
+            BindEnrollments();
+        }
+
         private void BindAttempts()
         {
             var attempts = new QuizBLL().GetAttemptsByUser(AuthBLL.CurrentUserId);
@@ -52,5 +69,4 @@ namespace Techspire_LMS.Member
                 : thumbnailPath;
         }
     }
-
 }
