@@ -25,7 +25,11 @@ namespace CloudWay_LMS.Account
                 if (!string.IsNullOrEmpty(returnUrl) && Server.UrlDecode(returnUrl).StartsWith("/"))
                     Response.Redirect(returnUrl);
                 else
-                    Response.Redirect("~/Pages/Default.aspx");
+                    
+                if (u.RoleID == 1)
+                    Response.Redirect("~/Admin/ManageCategories.aspx");
+                else
+                    Response.Redirect("~/Member/MyLearning.aspx");
             }
             catch (ValidationException vex)
             {

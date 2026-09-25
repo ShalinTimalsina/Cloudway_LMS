@@ -43,7 +43,7 @@
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Result">
                     <ItemTemplate>
-                        <span class='<%# (bool)Eval("IsPassed") ? "badge" : "badge badge-draft" %>'>
+                        <span class='<%# (bool)Eval("IsPassed") ? "badge badge-success" : "badge badge-danger" %>'>
                             <%# (bool)Eval("IsPassed") ? "Passed" : "Not passed" %>
                         </span>
                     </ItemTemplate>
@@ -54,3 +54,4 @@
         <asp:Panel ID="litNoAttempts" runat="server" Visible="false"><p>No quiz attempts yet.</p></asp:Panel>
     </div>
 </asp:Content>
+

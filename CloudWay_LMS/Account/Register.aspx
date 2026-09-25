@@ -61,3 +61,4 @@
         <p class="form-hint">Already have an account? <a href="<%= ResolveUrl("~/Account/Login.aspx") %>">Log in</a>.</p>
     </div>
 </asp:Content>
+
