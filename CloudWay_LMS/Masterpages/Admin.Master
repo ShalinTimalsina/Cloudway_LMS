@@ -7,7 +7,7 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><%: Page.Title %> | Admin | Learning Platform</title>
+    <title><%: Page.Title %> | Admin | CloudWay LMS</title>
     <link rel="stylesheet" href="<%= ResolveUrl("~/Content/site.css") %>" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
@@ -16,7 +16,7 @@
         <header class="site-header">
             <div class="container header-inner">
                 <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>" class="brand">
-                    <span class="brand-text">Learning Platform Admin</span>
+                    <span class="brand-text">CloudWay LMS Admin</span>
                 </a>
                 <span class="nav-welcome">
                     <asp:Literal ID="litAdminName" runat="server" /> ·
