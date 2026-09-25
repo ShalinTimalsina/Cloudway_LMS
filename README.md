@@ -1,1 +1,1 @@
-# Techspire_LMS
+# CloudWay_LMS
