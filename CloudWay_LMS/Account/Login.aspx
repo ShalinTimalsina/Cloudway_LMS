@@ -25,9 +25,17 @@
             <label for="<%= chkRememberMe.ClientID %>" style="margin:0; font-weight:400;">Remember me</label>
         </div>
         <asp:Button ID="btnLogin" runat="server" Text="Log In" CssClass="btn" OnClick="btnLogin_Click" />
-        <p class="form-hint">No account? <a href="<%= ResolveUrl("~/Account/Register.aspx") %>">Register here</a>.</p>
+        <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border); text-align:center;">
+            <p class="form-hint" style="margin-bottom:0.5rem;">Quick Test Login:</p>
+            <div style="display:flex; gap:0.5rem; justify-content:center;">
+                <button type="button" class="btn btn-outline btn-small" onclick="document.getElementById('<%= txtEmail.ClientID %>').value='admin@cloudway.local'; document.getElementById('<%= txtPassword.ClientID %>').value='Admin123!'; return false;">Fill Admin</button>
+                <button type="button" class="btn btn-outline btn-small" onclick="document.getElementById('<%= txtEmail.ClientID %>').value='student@cloudway.local'; document.getElementById('<%= txtPassword.ClientID %>').value='Student123!'; return false;">Fill Student</button>
+            </div>
+        </div>
+        <p class="form-hint" style="margin-top:1.5rem; text-align:center;">No account? <a href="<%= ResolveUrl("~/Account/Register.aspx") %>">Register here</a>.</p>
     </div>
 </asp:Content>
+
 
 
 
