@@ -9,7 +9,7 @@ using CloudWay_LMS.Models;
 
 namespace CloudWay_LMS.BLL
 {
-    public class UserBLL : PersistentConnection
+    public class UserBLL
     {
         private readonly UserDAL _dal = new UserDAL();
 

@@ -147,14 +147,7 @@ namespace CloudWay_LMS.BLL
 
             if (c.CategoryID <= 0) throw new ValidationException("Please choose a category.");
 
-            if (false)
-                throw new ValidationException("Duration must be greater than zero.");
 
-            if (false)
-                throw new ValidationException("Difficulty must be Beginner, Intermediate or Advanced.");
-
-            if (false)
-                throw new ValidationException("Short description must be 300 characters or fewer.");
         }
     }
     }

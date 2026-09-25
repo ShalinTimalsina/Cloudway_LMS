@@ -36,6 +36,8 @@ namespace CloudWay_LMS.Admin
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            litMessage.Text = ""; // Clear messages to prevent "gulf of evaluation" where sticky messages confuse users
+
             if (!IsPostBack)
             {
                 BindCourseDropdown();
@@ -86,13 +88,13 @@ namespace CloudWay_LMS.Admin
                 if (l.LessonID == 0)
                 {
                     savedLessonId = _bll.Add(l);
-                    litMessage.Text = Success("Lesson added.");
+                    litMessage.Text = ShowSuccess("Lesson added.");
                 }
                 else
                 {
                     _bll.Edit(l);
                     savedLessonId = l.LessonID;
-                    litMessage.Text = Success("Lesson updated.");
+                    litMessage.Text = ShowSuccess("Lesson updated.");
                 }
 
                 BindGrid();
@@ -105,7 +107,7 @@ namespace CloudWay_LMS.Admin
             }
             catch (ValidationException vex)
             {
-                litMessage.Text = Error(vex.Message);
+                litMessage.Text = ShowError(vex.Message);
             }
         }
 
@@ -122,11 +124,11 @@ namespace CloudWay_LMS.Admin
                 try
                 {
                     _bll.Remove(lessonId); // Resources cascade — see CreateDatabase.sql
-                    litMessage.Text = Success("Lesson deleted.");
+                    litMessage.Text = ShowSuccess("Lesson deleted.");
                 }
                 catch (ValidationException vex)
                 {
-                    litMessage.Text = Error(vex.Message);
+                    litMessage.Text = ShowError(vex.Message);
                 }
 
                 if (CurrentLessonId == lessonId) ResetForm();
@@ -212,17 +214,17 @@ namespace CloudWay_LMS.Admin
                     FileName = string.IsNullOrWhiteSpace(txtResourceTitle.Text)
                         ? fuResource.FileName : txtResourceTitle.Text,
                     FilePath = ResourceUploadFolder + safeFileName,
-                    
+                    ResourceType = ddlResourceType.SelectedValue
                 };
                 _resourceBll.Add(r);
 
-                litMessage.Text = Success("Resource uploaded.");
+                litMessage.Text = ShowSuccess("Resource uploaded.");
                 txtResourceTitle.Text = "";
                 BindResourcesGrid();
             }
             catch (ValidationException vex)
             {
-                litMessage.Text = Error(vex.Message);
+                litMessage.Text = ShowError(vex.Message);
             }
         }
 
@@ -234,17 +236,17 @@ namespace CloudWay_LMS.Admin
             try
             {
                 _resourceBll.Remove(resourceId);
-                litMessage.Text = Success("Resource deleted.");
+                litMessage.Text = ShowSuccess("Resource deleted.");
             }
             catch (ValidationException vex)
             {
-                litMessage.Text = Error(vex.Message);
+                litMessage.Text = ShowError(vex.Message);
             }
 
             BindResourcesGrid();
         }
 
-        private string Success(string msg) { return "<div class=\"alert alert-success\">" + Server.HtmlEncode(msg) + "</div>"; }
-        private string Error(string msg) { return "<div class=\"alert alert-error\">" + Server.HtmlEncode(msg) + "</div>"; }
+        private string ShowSuccess(string msg) { return "<div class=\"alert alert-success\">" + Server.HtmlEncode(msg) + "</div>"; }
+        private string ShowError(string msg) { return "<div class=\"alert alert-error\">" + Server.HtmlEncode(msg) + "</div>"; }
     }
 }

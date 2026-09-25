@@ -74,8 +74,7 @@
             <HeaderTemplate><ul></HeaderTemplate>
             <ItemTemplate>
                 <li>
-                    <a href='<%# ResolveUrl((string)Eval("FilePath")) %>' target="_blank" rel="noopener"><%# Eval("Title") %></a>
-                    <span class="card-meta">(<%# Eval("ResourceType") %>)</span>
+                    <a href='<%# ResolveUrl((string)Eval("FilePath")) %>' target="_blank" rel="noopener"><%# Eval("FileName") %></a>
                 </li>
             </ItemTemplate>
             <FooterTemplate></ul></FooterTemplate>

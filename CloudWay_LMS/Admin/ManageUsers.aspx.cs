@@ -85,7 +85,7 @@ namespace CloudWay_LMS.Admin
 
                     int newRoleId = u.RoleID == AdminRoleId ? MemberRoleId : AdminRoleId;
                     _bll.ChangeRole(userId, newRoleId, AuthBLL.CurrentUserId);
-                    litMessage.Text = Success("Role updated.");
+                    litMessage.Text = ShowSuccess("Role updated.");
                 }
                 else if (e.CommandName == "ToggleStatus")
                 {
@@ -94,24 +94,24 @@ namespace CloudWay_LMS.Admin
 
                     if (u.IsActive) _bll.Deactivate(userId, AuthBLL.CurrentUserId);
                     else _bll.Reactivate(userId);
-                    litMessage.Text = Success("Status updated.");
+                    litMessage.Text = ShowSuccess("Status updated.");
                 }
                 else if (e.CommandName == "ClearLockout")
                 {
                     _bll.ClearLockout(userId);
-                    litMessage.Text = Success("Lockout cleared.");
+                    litMessage.Text = ShowSuccess("Lockout cleared.");
                 }
             }
             catch (ValidationException vex)
             {
-                litMessage.Text = Error(vex.Message);
+                litMessage.Text = ShowError(vex.Message);
             }
 
             BindGrid();
         }
 
-        private string Success(string msg) { return "<div class=\"alert alert-success\">" + Server.HtmlEncode(msg) + "</div>"; }
-        private string Error(string msg) { return "<div class=\"alert alert-error\">" + Server.HtmlEncode(msg) + "</div>"; }
+        private string ShowSuccess(string msg) { return "<div class=\"alert alert-success\">" + Server.HtmlEncode(msg) + "</div>"; }
+        private string ShowError(string msg) { return "<div class=\"alert alert-error\">" + Server.HtmlEncode(msg) + "</div>"; }
 
         protected void gvUsers_PageIndexChanging(object sender, System.Web.UI.WebControls.GridViewPageEventArgs e)
         {

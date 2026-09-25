@@ -44,6 +44,6 @@
     </asp:PlaceHolder>
 
     <asp:PlaceHolder ID="phThanks" runat="server" Visible="false">
-        <div class="alert alert-success">Thanks — we've received your message and will get back to you.</div>
+        <div class="alert alert-success">Thanks - we've received your message and will get back to you.</div>
     </asp:PlaceHolder>
 </asp:Content>

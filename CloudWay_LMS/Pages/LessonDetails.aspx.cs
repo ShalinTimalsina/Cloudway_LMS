@@ -23,8 +23,17 @@ namespace CloudWay_LMS.Pages
         // Public/protected so the markup's <%= %> runtime expressions
         // (not <%# %> data-binding expressions, which need an explicit
         // DataBind() call) can read them directly.
-        protected int CourseId { get; private set; }
-        protected string VideoUrl { get; private set; }
+        protected int CourseId 
+        { 
+            get { return ViewState["CourseId"] != null ? (int)ViewState["CourseId"] : 0; }
+            private set { ViewState["CourseId"] = value; } 
+        }
+        
+        protected string VideoUrl 
+        { 
+            get { return (string)ViewState["VideoUrl"]; }
+            private set { ViewState["VideoUrl"] = value; } 
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -163,7 +172,7 @@ namespace CloudWay_LMS.Pages
             try
             {
                 decimal newProgress = new EnrollmentBLL().MarkLessonComplete(AuthBLL.CurrentUserId, CourseId, LessonId);
-                litMessage.Text = "<div class=\"alert alert-success\">Marked complete — course progress is now "
+                litMessage.Text = "<div class=\"alert alert-success\">Marked complete - course progress is now "
                     + newProgress.ToString("0") + "%.</div>";
             }
             catch (ValidationException vex)

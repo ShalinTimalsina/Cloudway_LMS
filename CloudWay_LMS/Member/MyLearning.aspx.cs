@@ -65,7 +65,7 @@ namespace CloudWay_LMS.Member
         protected string ThumbnailOrDefault(string thumbnailPath)
         {
             return string.IsNullOrWhiteSpace(thumbnailPath)
-                ? "~/Content/images/placeholder.png"
+                ? "https://via.placeholder.com/400x250.png?text=No+Thumbnail"
                 : thumbnailPath;
         }
     }

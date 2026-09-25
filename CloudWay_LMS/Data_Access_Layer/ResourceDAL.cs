@@ -12,7 +12,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<Resource> list = new List<Resource>();
             const string sql = @"
-                SELECT ResourceID, LessonID, FileName, FilePath,  UploadedAt
+                SELECT ResourceID, LessonID, FileName, FilePath, ResourceType, UploadedAt
                 FROM   Resources
                 WHERE  LessonID = @LessonID
                 ORDER BY UploadedAt;";
@@ -33,8 +33,8 @@ namespace CloudWay_LMS.Data_Access_Layer
         public int Insert(Resource res)
         {
             const string sql = @"
-                INSERT INTO Resources (LessonID, FileName, FilePath,  UploadedAt)
-                VALUES (@LessonID, @FileName, @FilePath, @ SYSUTCDATETIME());
+                INSERT INTO Resources (LessonID, FileName, FilePath, ResourceType, UploadedAt)
+                VALUES (@LessonID, @FileName, @FilePath, @ResourceType, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using (SqlConnection con = DbHelper.GetConnection())
@@ -43,7 +43,7 @@ namespace CloudWay_LMS.Data_Access_Layer
                 DbHelper.AddParam(cmd, "@LessonID", res.LessonID);
                 DbHelper.AddParam(cmd, "@FileName", res.FileName);
                 DbHelper.AddParam(cmd, "@FilePath", res.FilePath);
-                
+                DbHelper.AddParam(cmd, "@ResourceType", res.ResourceType);
                 con.Open();
                 return (int)cmd.ExecuteScalar();
             }

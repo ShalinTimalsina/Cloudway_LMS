@@ -29,7 +29,7 @@ namespace CloudWay_LMS.Models
             get
             {
                 return string.IsNullOrWhiteSpace(ThumbnailPath)
-                     ? "~/Content/images/placeholder.png"
+                     ? "https://via.placeholder.com/400x250.png?text=No+Thumbnail"
                      : ThumbnailPath;
             }
         }

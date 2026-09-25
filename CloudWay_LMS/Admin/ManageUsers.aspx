@@ -21,9 +21,7 @@
                         <asp:Literal ID="litLocked" runat="server" />
                     </ItemTemplate>
                 </asp:TemplateField>
-                <asp:TemplateField HeaderText="Last Login">
-                    <ItemTemplate><%# Eval("LastLoginAt", "{0:yyyy-MM-dd HH:mm}") %></ItemTemplate>
-                </asp:TemplateField>
+
                 <asp:TemplateField>
                     <ItemTemplate>
                         <asp:LinkButton ID="lnkRole" runat="server" CommandName="ToggleRole" CommandArgument='<%# Eval("UserID") %>' CssClass="btn btn-outline btn-small" />

@@ -1,307 +1,253 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
+using System.Data.SqlClient;
 using System.Web.UI.WebControls;
 using CloudWay_LMS.BLL;
+using CloudWay_LMS.Data_Access_Layer;
 using CloudWay_LMS.Models;
+using Newtonsoft.Json;
 
 namespace CloudWay_LMS.Admin
 {
     public partial class ManagaeQuiz : System.Web.UI.Page
     {
-        private readonly QuizBLL _bll = new QuizBLL();
+        private readonly QuizBLL _quizBll = new QuizBLL();
+        private readonly CourseBLL _courseBll = new CourseBLL();
 
-        private int SelectedCourseId
+        public class QuizData
         {
-            get { return string.IsNullOrEmpty(ddlCourse.SelectedValue) ? 0 : int.Parse(ddlCourse.SelectedValue); }
+            public int QuizID { get; set; }
+            public int CourseID { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public int? TimeLimitMinutes { get; set; }
+            public int PassingScore { get; set; }
+            public bool IsPublished { get; set; }
+            public List<QuestionData> Questions { get; set; }
         }
-        private int CurrentQuizId
+
+        public class QuestionData
         {
-            get { return int.Parse(hfQuizId.Value); }
-            set { hfQuizId.Value = value.ToString(); }
+            public int QuestionID { get; set; }
+            public string QuestionText { get; set; }
+            public string QuestionType { get; set; }
+            public int Marks { get; set; }
+            public List<OptionData> Options { get; set; }
         }
-        private int CurrentQuestionId
+
+        public class OptionData
         {
-            get { return int.Parse(hfQuestionId.Value); }
-            set { hfQuestionId.Value = value.ToString(); }
+            public int OptionID { get; set; }
+            public string OptionText { get; set; }
+            public bool IsCorrect { get; set; }
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                RunSchemaMigration();
                 BindCourseDropdown();
             }
+        }
+
+        private void RunSchemaMigration()
+        {
+            try
+            {
+                using (var con = DbHelper.GetConnection())
+                {
+                    con.Open();
+                    new SqlCommand("ALTER TABLE Quizzes ADD Description NVARCHAR(MAX) NULL;", con).ExecuteNonQuery();
+                    new SqlCommand("ALTER TABLE Quizzes ADD TimeLimitMinutes INT NULL;", con).ExecuteNonQuery();
+                    new SqlCommand("ALTER TABLE Quizzes ADD IsPublished BIT NOT NULL DEFAULT 0;", con).ExecuteNonQuery();
+                }
+            }
+            catch { /* columns already exist */ }
         }
 
         private void BindCourseDropdown()
         {
             ddlCourse.Items.Clear();
             ddlCourse.Items.Add(new ListItem("— Select a course —", ""));
-            foreach (var c in new CourseBLL().GetAllForAdmin())
+            foreach (var c in _courseBll.GetAllForAdmin())
                 ddlCourse.Items.Add(new ListItem(c.Title, c.CourseID.ToString()));
         }
 
-        // ====================================================================
-        // LEVEL 1 — Course selection -> Quiz list
-        // ====================================================================
         protected void ddlCourse_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CurrentQuizId = 0;
-            CurrentQuestionId = 0;
-            phQuestionPanel.Visible = false;
-            phOptionPanel.Visible = false;
-
-            phQuizPanel.Visible = SelectedCourseId > 0;
-            ResetQuizForm();
-            if (SelectedCourseId > 0) BindQuizzesGrid();
+            if (string.IsNullOrEmpty(ddlCourse.SelectedValue))
+            {
+                divQuizList.Visible = false;
+                quizEditorPanel.Visible = false;
+            }
+            else
+            {
+                divQuizList.Visible = true;
+                quizEditorPanel.Visible = false;
+                BindQuizzesGrid();
+            }
         }
 
         private void BindQuizzesGrid()
         {
-            gvQuizzes.DataSource = _bll.GetByCourse(SelectedCourseId);
+            int courseId = int.Parse(ddlCourse.SelectedValue);
+            gvQuizzes.DataSource = _quizBll.GetByCourse(courseId);
             gvQuizzes.DataBind();
         }
 
-        protected void btnSaveQuiz_Click(object sender, EventArgs e)
+        protected void btnCreateQuiz_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Quiz q = new Quiz
-                {
-                    QuizID = CurrentQuizId,
-                    CourseID = SelectedCourseId,
-                    Title = txtQuizTitle.Text,
-                    PassingScore = string.IsNullOrWhiteSpace(txtPassingScore.Text) ? 50 : int.Parse(txtPassingScore.Text),
-                    
-                };
+            int courseId = int.Parse(ddlCourse.SelectedValue);
+            quizEditorPanel.Visible = true;
+            divQuizList.Visible = false;
 
-                if (q.QuizID == 0) { _bll.AddQuiz(q); litMessage.Text = Success("Quiz added."); }
-                else { _bll.EditQuiz(q); litMessage.Text = Success("Quiz updated."); }
-
-                ResetQuizForm();
-                BindQuizzesGrid();
-            }
-            catch (ValidationException vex)
-            {
-                litMessage.Text = Error(vex.Message);
-            }
+            var emptyData = new QuizData { CourseID = courseId, PassingScore = 50, Questions = new List<QuestionData>() };
+            ClientScript.RegisterStartupScript(this.GetType(), "InitQuiz", "initEditor('" + JsonConvert.SerializeObject(emptyData).Replace("'", "\\'") + "');", true);
         }
 
         protected void gvQuizzes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int quizId = int.Parse((string)e.CommandArgument);
 
-            if (e.CommandName == "EditRow")
+            if (e.CommandName == "EditQuiz")
             {
-                Quiz q = _bll.GetById(quizId);
-                if (q == null) return;
+                Quiz q = _quizBll.GetById(quizId);
+                List<Question> questions = _quizBll.GetQuestionsWithOptions(quizId);
 
-                CurrentQuizId = q.QuizID;
-                txtQuizTitle.Text = q.Title;
-                txtPassingScore.Text = q.PassingScore.ToString();
-                
-                litQuizFormTitle.Text = "Edit quiz";
+                var data = new QuizData
+                {
+                    QuizID = q.QuizID,
+                    CourseID = q.CourseID,
+                    Title = q.Title,
+                    Description = q.Description,
+                    TimeLimitMinutes = q.TimeLimitMinutes,
+                    PassingScore = q.PassingScore,
+                    IsPublished = q.IsPublished,
+                    Questions = new List<QuestionData>()
+                };
+
+                foreach (var question in questions)
+                {
+                    var qd = new QuestionData
+                    {
+                        QuestionID = question.QuestionID,
+                        QuestionText = question.QuestionText,
+                        QuestionType = question.QuestionType,
+                        Marks = question.Marks,
+                        Options = new List<OptionData>()
+                    };
+                    foreach (var opt in question.Options)
+                    {
+                        qd.Options.Add(new OptionData { OptionID = opt.OptionID, OptionText = opt.OptionText, IsCorrect = opt.IsCorrect });
+                    }
+                    data.Questions.Add(qd);
+                }
+
+                quizEditorPanel.Visible = true;
+                divQuizList.Visible = false;
+
+                string json = JsonConvert.SerializeObject(data);
+                ClientScript.RegisterStartupScript(this.GetType(), "InitQuiz", "initEditor('" + json.Replace("'", "\\'") + "');", true);
             }
-            else if (e.CommandName == "DeleteRow")
+            else if (e.CommandName == "DeleteQuiz")
             {
-                try { _bll.RemoveQuiz(quizId); litMessage.Text = Success("Quiz deleted."); }
-                catch (ValidationException vex) { litMessage.Text = Error(vex.Message); }
-
-                if (CurrentQuizId == quizId) { CurrentQuizId = 0; phQuestionPanel.Visible = false; }
+                try
+                {
+                    _quizBll.RemoveQuiz(quizId);
+                    litMessage.Text = "<div class=\"alert alert-success\">Quiz deleted.</div>";
+                }
+                catch (ValidationException vex)
+                {
+                    litMessage.Text = "<div class=\"alert alert-error\">" + Server.HtmlEncode(vex.Message) + "</div>";
+                }
                 BindQuizzesGrid();
             }
-            else if (e.CommandName == "ManageQuestions")
-            {
-                Quiz q = _bll.GetById(quizId);
-                if (q == null) return;
-
-                CurrentQuizId = quizId;
-                litCurrentQuizTitle.Text = Server.HtmlEncode(q.Title);
-                phQuestionPanel.Visible = true;
-                phOptionPanel.Visible = false;
-                ResetQuestionForm();
-                BindQuestionsGrid();
-            }
         }
 
-        protected void btnCancelQuiz_Click(object sender, EventArgs e) { ResetQuizForm(); }
-
-        private void ResetQuizForm()
-        {
-            CurrentQuizId = 0;
-            txtQuizTitle.Text = "";
-            txtPassingScore.Text = "50";
-            chkQuizActive.Checked = true;
-            litQuizFormTitle.Text = "Add a quiz";
-        }
-
-        // ====================================================================
-        // LEVEL 2 — Quiz -> Question list
-        // ====================================================================
-        private void BindQuestionsGrid()
-        {
-            gvQuestions.DataSource = _bll.GetQuestionsWithOptions(CurrentQuizId);
-            gvQuestions.DataBind();
-        }
-
-        protected void btnSaveQuestion_Click(object sender, EventArgs e)
+        protected void btnSaveQuiz_Click(object sender, EventArgs e)
         {
             try
             {
-                Question q = new Question
+                string json = hfQuizData.Value;
+                if (string.IsNullOrEmpty(json)) return;
+
+                QuizData data = JsonConvert.DeserializeObject<QuizData>(json);
+
+                Quiz q = new Quiz
                 {
-                    QuestionID = CurrentQuestionId,
-                    QuizID = CurrentQuizId,
-                    QuestionText = txtQuestionText.Text,
+                    QuizID = data.QuizID,
+                    CourseID = data.CourseID,
+                    Title = data.Title,
+                    Description = data.Description,
+                    TimeLimitMinutes = data.TimeLimitMinutes,
+                    PassingScore = data.PassingScore,
+                    IsPublished = data.IsPublished
+                };
+
+                if (q.QuizID == 0)
+                {
+                    q.QuizID = _quizBll.AddQuiz(q);
+                }
+                else
+                {
+                    _quizBll.EditQuiz(q);
                     
-                    Marks = string.IsNullOrWhiteSpace(txtMarksOld.Text) ? 1 : int.Parse(txtMarksOld.Text)
-                };
+                    // Bruteforce sync for prototype: Delete all old questions and re-insert them.
+                    // This is much simpler than diffing for a prototype editor.
+                    List<Question> oldQuestions = _quizBll.GetQuestionsWithOptions(q.QuizID);
+                    foreach (var oldQ in oldQuestions)
+                    {
+                        _quizBll.RemoveQuestion(oldQ.QuestionID);
+                    }
+                }
 
-                if (q.QuestionID == 0) { _bll.AddQuestion(q); litMessage.Text = Success("Question added."); }
-                else { _bll.EditQuestion(q); litMessage.Text = Success("Question updated."); }
-
-                ResetQuestionForm();
-                BindQuestionsGrid();
-            }
-            catch (ValidationException vex)
-            {
-                litMessage.Text = Error(vex.Message);
-            }
-        }
-
-        protected void gvQuestions_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            int questionId = int.Parse((string)e.CommandArgument);
-
-            if (e.CommandName == "EditRow")
-            {
-                Question q = _bll.GetQuestionsWithOptions(CurrentQuizId).Find(x => x.QuestionID == questionId);
-                if (q == null) return;
-
-                CurrentQuestionId = q.QuestionID;
-                txtQuestionText.Text = q.QuestionText;
-                
-                
-            }
-            else if (e.CommandName == "DeleteRow")
-            {
-                try { _bll.RemoveQuestion(questionId); litMessage.Text = Success("Question deleted."); }
-                catch (ValidationException vex) { litMessage.Text = Error(vex.Message); }
-
-                if (CurrentQuestionId == questionId) { CurrentQuestionId = 0; phOptionPanel.Visible = false; }
-                BindQuestionsGrid();
-            }
-            else if (e.CommandName == "ManageOptions")
-            {
-                var question = _bll.GetQuestionsWithOptions(CurrentQuizId).Find(x => x.QuestionID == questionId);
-                if (question == null) return;
-
-                CurrentQuestionId = questionId;
-                litCurrentQuestionText.Text = Server.HtmlEncode(question.QuestionText);
-                phOptionPanel.Visible = true;
-                ResetOptionForm();
-                BindOptionsGrid();
-            }
-        }
-
-        protected void btnCancelQuestion_Click(object sender, EventArgs e) { ResetQuestionForm(); }
-
-        protected void btnCloseQuestionPanel_Click(object sender, EventArgs e)
-        {
-            phQuestionPanel.Visible = false;
-            phOptionPanel.Visible = false;
-            CurrentQuizId = 0;
-            CurrentQuestionId = 0;
-        }
-
-        private void ResetQuestionForm()
-        {
-            CurrentQuestionId = 0;
-            txtQuestionText.Text = "";
-            ddlQuestionTypeOld.SelectedValue = "SingleChoice";
-            txtMarksOld.Text = "1";
-        }
-
-        // ====================================================================
-        // LEVEL 3 — Question -> Option list
-        // ====================================================================
-        private void BindOptionsGrid()
-        {
-            var question = _bll.GetQuestionsWithOptions(CurrentQuizId).Find(x => x.QuestionID == CurrentQuestionId);
-            gvOptions.DataSource = question != null ? question.Options : null;
-            gvOptions.DataBind();
-        }
-
-        protected void btnSaveOption_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                QuestionOption o = new QuestionOption
+                // Insert all new questions and options
+                foreach (var qd in data.Questions)
                 {
-                    OptionID = int.Parse(hfOptionEditId.Value),
-                    QuestionID = CurrentQuestionId,
-                    OptionText = txtOptionText.Text,
-                    IsCorrect = chkIsCorrect.Checked,
-                    SortOrder = string.IsNullOrWhiteSpace(txtOptionSort.Text) ? 1 : int.Parse(txtOptionSort.Text)
-                };
+                    Question newQ = new Question
+                    {
+                        QuizID = q.QuizID,
+                        QuestionText = qd.QuestionText,
+                        QuestionType = qd.QuestionType,
+                        Marks = qd.Marks
+                    };
+                    newQ.QuestionID = _quizBll.AddQuestion(newQ);
 
-                if (o.OptionID == 0) { _bll.AddOption(o); litMessage.Text = Success("Option added."); }
-                else { _bll.EditOption(o); litMessage.Text = Success("Option updated."); }
+                    foreach (var od in qd.Options)
+                    {
+                        QuestionOption newO = new QuestionOption
+                        {
+                            QuestionID = newQ.QuestionID,
+                            OptionText = od.OptionText,
+                            IsCorrect = od.IsCorrect
+                        };
+                        _quizBll.AddOption(newO);
+                    }
+                }
 
-                ResetOptionForm();
-                BindOptionsGrid();
+                litMessage.Text = "<div class=\"alert alert-success\">Quiz saved successfully.</div>";
+                
+                quizEditorPanel.Visible = false;
+                divQuizList.Visible = true;
+                BindQuizzesGrid();
             }
-            catch (ValidationException vex)
+            catch (Exception ex)
             {
-                litMessage.Text = Error(vex.Message);
+                litMessage.Text = "<div class=\"alert alert-error\">" + Server.HtmlEncode(ex.Message) + "</div>";
+                
+                // Keep editor open if error occurs
+                quizEditorPanel.Visible = true;
+                divQuizList.Visible = false;
+                ClientScript.RegisterStartupScript(this.GetType(), "InitQuiz", "initEditor('" + hfQuizData.Value.Replace("'", "\\'") + "');", true);
             }
         }
 
-        protected void gvOptions_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void btnCancelQuiz_Click(object sender, EventArgs e)
         {
-            int optionId = int.Parse((string)e.CommandArgument);
-
-            if (e.CommandName == "EditRow")
-            {
-                var question = _bll.GetQuestionsWithOptions(CurrentQuizId).Find(x => x.QuestionID == CurrentQuestionId);
-                var option = question != null ? question.Options.Find(o => o.OptionID == optionId) : null;
-                if (option == null) return;
-
-                hfOptionEditId.Value = option.OptionID.ToString();
-                txtOptionText.Text = option.OptionText;
-                chkIsCorrect.Checked = option.IsCorrect;
-                txtOptionSort.Text = option.SortOrder.ToString();
-            }
-            else if (e.CommandName == "DeleteRow")
-            {
-                try { _bll.RemoveOption(optionId); litMessage.Text = Success("Option deleted."); }
-                catch (ValidationException vex) { litMessage.Text = Error(vex.Message); }
-                BindOptionsGrid();
-            }
+            quizEditorPanel.Visible = false;
+            divQuizList.Visible = true;
+            BindQuizzesGrid();
         }
-
-        protected void btnCancelOption_Click(object sender, EventArgs e) { ResetOptionForm(); }
-
-        protected void btnCloseOptionPanel_Click(object sender, EventArgs e)
-        {
-            phOptionPanel.Visible = false;
-            CurrentQuestionId = 0;
-        }
-
-        private void ResetOptionForm()
-        {
-            hfOptionEditId.Value = "0";
-            txtOptionText.Text = "";
-            chkIsCorrect.Checked = false;
-            txtOptionSort.Text = "1";
-        }
-
-        // ====================================================================
-        private string Success(string msg) { return "<div class=\"alert alert-success\">" + Server.HtmlEncode(msg) + "</div>"; }
-        private new string Error(string msg) { return "<div class=\"alert alert-error\">" + Server.HtmlEncode(msg) + "</div>"; }
-    
-}
+    }
 }

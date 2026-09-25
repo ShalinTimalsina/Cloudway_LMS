@@ -6,6 +6,5 @@ namespace CloudWay_LMS.Models
         public int    QuestionID { get; set; }
         public string OptionText { get; set; }
         public bool   IsCorrect  { get; set; }
-        public int    SortOrder  { get; set; }
     }
 }

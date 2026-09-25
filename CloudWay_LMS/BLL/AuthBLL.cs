@@ -175,7 +175,38 @@ namespace CloudWay_LMS.BLL
         // ================================================================
         public static bool IsLoggedIn
         {
-            get { return HttpContext.Current != null && HttpContext.Current.Session["UserID"] != null; }
+            get
+            {
+                if (HttpContext.Current == null || HttpContext.Current.Session["UserID"] == null) return false;
+
+                // Real-time validation: ensures deactivated/demoted users are updated immediately
+                // Cached per-request in HttpContext.Items to avoid multiple DB hits per page load
+                var context = HttpContext.Current;
+                string key = "ValidatedUser";
+                
+                if (context.Items[key] == null)
+                {
+                    int userId = (int)context.Session["UserID"];
+                    User u = new UserDAL().SelectById(userId);
+
+                    if (u == null || !u.IsActive)
+                    {
+                        context.Session.Clear();
+                        context.Session.Abandon();
+                        return false;
+                    }
+
+                    // Sync role if demoted/promoted mid-session
+                    if ((int)context.Session["RoleID"] != u.RoleID)
+                    {
+                        context.Session["RoleID"] = u.RoleID;
+                        context.Session["RoleName"] = u.RoleName;
+                    }
+
+                    context.Items[key] = u;
+                }
+                return true;
+            }
         }
 
         public static int CurrentUserId

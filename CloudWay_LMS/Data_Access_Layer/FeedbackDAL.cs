@@ -10,7 +10,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<Feedback> list = new List<Feedback>();
             const string sql = @"
-                SELECT FeedbackID, UserID, Name, Email,  Message,  SubmittedAt
+                SELECT FeedbackID, UserID, Name, Email, Subject, Message, IsRead, SubmittedAt
                 FROM   Feedback
                 ORDER BY SubmittedAt DESC;";
 
@@ -30,8 +30,8 @@ namespace CloudWay_LMS.Data_Access_Layer
         public int Insert(Feedback f)
         {
             const string sql = @"
-                INSERT INTO Feedback (UserID, Name, Email,  Message,  SubmittedAt)
-                VALUES (@UserID, @Name, @Email, @ @Message, 0, SYSUTCDATETIME());
+                INSERT INTO Feedback (UserID, Name, Email, Subject, Message, IsRead, SubmittedAt)
+                VALUES (@UserID, @Name, @Email, @Subject, @Message, 0, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using (SqlConnection con = DbHelper.GetConnection())
@@ -40,7 +40,7 @@ namespace CloudWay_LMS.Data_Access_Layer
                 DbHelper.AddParam(cmd, "@UserID", f.UserID);
                 DbHelper.AddParam(cmd, "@Name", f.Name);
                 DbHelper.AddParam(cmd, "@Email", f.Email);
-                
+                DbHelper.AddParam(cmd, "@Subject", f.Subject);
                 DbHelper.AddParam(cmd, "@Message", f.Message);
                 con.Open();
                 return (int)cmd.ExecuteScalar();
@@ -49,7 +49,7 @@ namespace CloudWay_LMS.Data_Access_Layer
 
         public bool MarkRead(int feedbackId)
         {
-            const string sql = "UPDATE Feedback SET Message = Message WHERE FeedbackID = @FeedbackID;";
+            const string sql = "UPDATE Feedback SET IsRead = 1 WHERE FeedbackID = @FeedbackID;";
 
             using (SqlConnection con = DbHelper.GetConnection())
             using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))

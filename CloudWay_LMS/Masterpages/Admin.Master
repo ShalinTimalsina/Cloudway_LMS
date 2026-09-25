@@ -8,6 +8,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%: Page.Title %> | Admin | CloudWay LMS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Poppins:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<%= ResolveUrl("~/Content/site.css") %>" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
@@ -19,7 +23,7 @@
                     <span class="brand-text">CloudWay LMS Admin</span>
                 </a>
                 <span class="nav-welcome">
-                    <asp:Literal ID="litAdminName" runat="server" /> ·
+                    <asp:Literal ID="litAdminName" runat="server" /> |
                     <asp:LinkButton ID="lnkLogout" runat="server" OnClick="lnkLogout_Click"
                                     CausesValidation="false" ForeColor="White">Logout</asp:LinkButton>
                 </span>
@@ -46,6 +50,46 @@
             </div>
         </div>
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var elements = document.querySelectorAll('[onclick*="return confirm"]');
+            for (var i = 0; i < elements.length; i++) {
+                (function(el) {
+                    var onclickRaw = el.getAttribute('onclick');
+                    var match = onclickRaw.match(/confirm\(([^)]+)\)/);
+                    if (match) {
+                        var message = match[1].replace(/['"]|&#39;|&quot;/g, '');
+                        el.removeAttribute('onclick');
+                        el.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            Swal.fire({
+                                title: 'Please Confirm',
+                                text: message,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#0056b3',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Yes, proceed'
+                            }).then(function(result) {
+                                if (result.isConfirmed) {
+                                    var href = el.getAttribute('href');
+                                    if (href && href.indexOf('javascript:') === 0) {
+                                        eval(href.substring(11));
+                                    } else if (href) {
+                                        window.location.href = href;
+                                    } else {
+                                        var form = el.closest('form');
+                                        if (form) form.submit();
+                                    }
+                                }
+                            });
+                        });
+                    }
+                })(elements[i]);
+            }
+        });
+    </script>
 </body>
 </html>
 

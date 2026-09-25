@@ -13,7 +13,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<Question> list = new List<Question>();
             const string sql = @"
-                SELECT QuestionID, QuizID, QuestionText,  Marks
+                SELECT QuestionID, QuizID, QuestionText, QuestionType, Marks
                 FROM   Questions
                 WHERE  QuizID = @QuizID
                 ORDER BY QuestionID;";
@@ -33,7 +33,7 @@ namespace CloudWay_LMS.Data_Access_Layer
 
         public Question SelectById(int questionId)
         {
-            const string sql = "SELECT QuestionID, QuizID, QuestionText,  Marks FROM Questions WHERE QuestionID = @QuestionID;";
+            const string sql = "SELECT QuestionID, QuizID, QuestionText, QuestionType, Marks FROM Questions WHERE QuestionID = @QuestionID;";
 
             using (SqlConnection con = DbHelper.GetConnection())
             using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))
@@ -50,8 +50,8 @@ namespace CloudWay_LMS.Data_Access_Layer
         public int Insert(Question q)
         {
             const string sql = @"
-                INSERT INTO Questions (QuizID, QuestionText,  Marks)
-                VALUES (@QuizID, @QuestionText, @ @Marks);
+                INSERT INTO Questions (QuizID, QuestionText, QuestionType, Marks)
+                VALUES (@QuizID, @QuestionText, @QuestionType, @Marks);
                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using (SqlConnection con = DbHelper.GetConnection())
@@ -59,8 +59,8 @@ namespace CloudWay_LMS.Data_Access_Layer
             {
                 DbHelper.AddParam(cmd, "@QuizID", q.QuizID);
                 DbHelper.AddParam(cmd, "@QuestionText", q.QuestionText);
-                
-                
+                DbHelper.AddParam(cmd, "@QuestionType", q.QuestionType);
+                DbHelper.AddParam(cmd, "@Marks", q.Marks);
                 con.Open();
                 return (int)cmd.ExecuteScalar();
             }
@@ -69,15 +69,15 @@ namespace CloudWay_LMS.Data_Access_Layer
         public bool Update(Question q)
         {
             const string sql = @"
-                UPDATE Questions SET QuestionText = @QuestionText, QuestionType = @ Marks = @Marks
+                UPDATE Questions SET QuestionText = @QuestionText, QuestionType = @QuestionType, Marks = @Marks
                 WHERE QuestionID = @QuestionID;";
 
             using (SqlConnection con = DbHelper.GetConnection())
             using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))
             {
                 DbHelper.AddParam(cmd, "@QuestionText", q.QuestionText);
-                
-                
+                DbHelper.AddParam(cmd, "@QuestionType", q.QuestionType);
+                DbHelper.AddParam(cmd, "@Marks", q.Marks);
                 DbHelper.AddParam(cmd, "@QuestionID", q.QuestionID);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
@@ -104,7 +104,7 @@ namespace CloudWay_LMS.Data_Access_Layer
                 QuestionID   = DbHelper.GetInt(r, "QuestionID"),
                 QuizID       = DbHelper.GetInt(r, "QuizID"),
                 QuestionText = DbHelper.GetString(r, "QuestionText"),
-                
+                QuestionType = DbHelper.GetString(r, "QuestionType"),
                 Marks        = DbHelper.GetInt(r, "Marks")
             };
         }

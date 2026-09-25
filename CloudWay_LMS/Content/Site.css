@@ -1,29 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600&display=swap');
-
 /* ============================================================================
    CloudWay LMS — site.css
    ============================================================================ */
 
 :root {
-    --brand: #0B2545;
-    --brand-dark: #07172b;
-    --brand-light: #F7F8FA;
-    --accent: #13A89E;
-    --accent-hover: #0f8c83;
-    --warning: #F2A93B;
-    --danger: #D3453A;
-    --danger-bg: #fbeaea;
-    --success: #2E9E5B;
-    --success-bg: #e8f6ec;
-    --text: #1B1F27;
-    --text-muted: #5B6472;
-    --border: #E1E4E8;
+    /* Colours */
+    --brand: #152238;          /* Slate navy */
+    --brand-dark: #0E1826;     /* Deep slate */
+    --accent: #E8890C;         /* Amber */
+    --accent-light: #FDECD3;   /* Pale amber */
+    --bg-color: #F1F3F6;       /* Cool light grey */
+    --surface: #FFFFFF;        /* White */
+    --text: #161B22;           /* Near-black slate */
+    --text-muted: #5B6472;     /* Slate grey */
+    --border: #DDE2E8;         /* Light grey */
+    
+    --success: #1E8E5A;        /* Green */
+    --success-bg: #e8f6ec;     /* Green light tint (derived) */
+    --danger: #D3453A;         /* Red */
+    --danger-bg: #fbeaea;      /* Red light tint (derived) */
+    --warning: #C98A00;        /* Gold */
+
+    /* Typography */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Spacing & Layout */
     --radius: 8px;
     --radius-btn: 6px;
     --shadow: 0 2px 4px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
-    
-    --font-heading: 'Poppins', sans-serif;
-    --font-body: 'Inter', sans-serif;
 }
 
 * {
@@ -34,9 +39,9 @@ body {
     margin: 0;
     font-family: var(--font-body);
     font-weight: 400;
-    font-size: 16px;
+    font-size: 17px;
     color: var(--text);
-    background: var(--brand-light);
+    background: var(--bg-color);
     line-height: 1.6;
 }
 
@@ -46,9 +51,10 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
 }
 
-h1 { font-size: 28px; font-weight: 600; }
-h2 { font-size: 22px; font-weight: 600; }
-h3 { font-size: 18px; font-weight: 500; }
+h1 { font-size: 34px; font-weight: 600; line-height: 1.25; }
+h2 { font-size: 26px; font-weight: 600; line-height: 1.3; }
+h3 { font-size: 20px; font-weight: 600; line-height: 1.35; }
+h4, h5, h6 { font-size: 17px; font-weight: 600; }
 
 .container {
     max-width: 1140px;
@@ -134,7 +140,7 @@ a:hover {
 }
 
 .btn-nav:hover {
-    background: var(--accent-hover);
+    background: var(--brand-dark);
 }
 
 .nav-welcome {
@@ -146,7 +152,7 @@ a:hover {
 /* ---------- Breadcrumbs ---------- */
 .breadcrumb-bar {
     padding: 1rem;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
 }
 .breadcrumb-current {
@@ -166,7 +172,7 @@ a:hover {
 
 .page-subtitle {
     color: var(--text-muted);
-    font-size: 16px;
+    font-size: 17px;
     margin: 0 0 2rem;
 }
 
@@ -215,17 +221,17 @@ a:hover {
 
 .card-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--brand);
 }
 
 .card-meta {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
 }
 
 .card-desc {
-    font-size: 16px;
+    font-size: 17px;
     color: var(--text);
     flex: 1;
 }
@@ -236,13 +242,22 @@ a:hover {
     gap: 0.5rem;
 }
 
+.tag {
+    font-family: var(--font-mono);
+    background: var(--accent-light);
+    color: var(--brand);
+}
+
 .tag, .badge {
     display: inline-flex;
     align-items: center;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     padding: 0.2rem 0.6rem;
     border-radius: 999px;
+}
+
+.badge {
     background: #eef2f7;
     color: var(--brand);
 }
@@ -265,20 +280,20 @@ a:hover {
     display: block;
     font-weight: 500;
     margin-bottom: 0.5rem;
-    font-size: 16px;
+    font-size: 17px;
     color: var(--text);
 }
 
 .form-control {
     width: 100%;
-    height: 40px;
+    height: 44px;
     padding: 0 12px;
     border: 1px solid var(--border);
     border-radius: var(--radius-btn);
-    font-size: 16px;
+    font-size: 17px;
     font-family: inherit;
     color: var(--text);
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .form-control:focus {
@@ -288,7 +303,7 @@ a:hover {
 }
 
 .form-hint {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
     margin-top: 0.25rem;
 }
@@ -318,13 +333,13 @@ a:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    padding: 0 1.5rem;
+    height: 44px;
+    padding: 0 20px;
     border-radius: var(--radius-btn);
     border: 1px solid var(--brand);
     background: var(--brand);
     color: #ffffff;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 500;
     cursor: pointer;
     font-family: inherit;
@@ -333,7 +348,7 @@ a:hover {
 
 .btn:hover {
     background: var(--brand-dark);
-    border-color: var(--brand-dark);
+    border-color: var(--accent);
     text-decoration: none;
     color: #ffffff;
 }
@@ -344,7 +359,7 @@ a:hover {
     border-color: var(--border);
 }
 .btn-outline:hover {
-    background: var(--brand-light);
+    background: var(--bg-color);
     border-color: var(--brand);
     color: var(--brand);
 }
@@ -383,7 +398,7 @@ a:hover {
     padding: 1rem;
     border-radius: var(--radius);
     margin-bottom: 1.5rem;
-    font-size: 16px;
+    font-size: 17px;
 }
 
 .alert-error {
@@ -412,14 +427,14 @@ a:hover {
     text-align: left;
     padding: 1rem;
     border-bottom: 1px solid var(--border);
-    font-size: 16px;
+    font-size: 17px;
 }
 
 .table-admin th {
-    background: var(--brand-light);
+    background: var(--bg-color);
     color: var(--text-muted);
     font-weight: 500;
-    font-size: 13px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -429,7 +444,7 @@ a:hover {
 }
 
 .table-admin tr:hover td {
-    background: var(--brand-light);
+    background: var(--accent-light);
 }
 
 .admin-toolbar {

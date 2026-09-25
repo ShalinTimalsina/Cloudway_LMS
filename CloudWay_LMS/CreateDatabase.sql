@@ -143,6 +143,7 @@ CREATE TABLE Resources (
     LessonID     INT           NOT NULL,
     FileName     NVARCHAR(150) NOT NULL,
     FilePath     NVARCHAR(260) NOT NULL,
+    ResourceType NVARCHAR(50)  NOT NULL DEFAULT 'Document',
     UploadedAt   DATETIME2(0)  NOT NULL DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_Resources PRIMARY KEY (ResourceID),
     CONSTRAINT FK_Resources_Lessons FOREIGN KEY (LessonID) REFERENCES Lessons(LessonID) ON DELETE CASCADE
@@ -206,6 +207,8 @@ CREATE TABLE Questions (
     QuestionID   INT IDENTITY(1,1) NOT NULL,
     QuizID       INT           NOT NULL,
     QuestionText NVARCHAR(500) NOT NULL,
+    QuestionType NVARCHAR(50)  NOT NULL DEFAULT 'SingleChoice',
+    Marks        INT           NOT NULL DEFAULT 1,
     CONSTRAINT PK_Questions PRIMARY KEY (QuestionID),
     CONSTRAINT FK_Questions_Quizzes FOREIGN KEY (QuizID) REFERENCES Quizzes(QuizID) ON DELETE CASCADE
 );
@@ -236,6 +239,8 @@ CREATE TABLE QuizAttempts (
     UserID      INT          NOT NULL,
     QuizID      INT          NOT NULL,
     Score       INT          NOT NULL,
+    TotalMarks  INT          NOT NULL DEFAULT 0,
+    IsPassed    BIT          NOT NULL DEFAULT 0,
     AttemptedAt DATETIME2(0) NOT NULL DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_QuizAttempts PRIMARY KEY (AttemptID),
     CONSTRAINT FK_QuizAttempts_Users FOREIGN KEY (UserID) REFERENCES Users(UserID),
@@ -254,7 +259,9 @@ CREATE TABLE Feedback (
     UserID      INT           NULL,
     Name        NVARCHAR(100) NOT NULL,
     Email       NVARCHAR(150) NOT NULL,
+    Subject     NVARCHAR(150) NULL,
     Message     NVARCHAR(MAX) NOT NULL,
+    IsRead      BIT           NOT NULL DEFAULT 0,
     SubmittedAt DATETIME2(0)  NOT NULL DEFAULT SYSUTCDATETIME(),
     CONSTRAINT PK_Feedback PRIMARY KEY (FeedbackID),
     CONSTRAINT FK_Feedback_Users FOREIGN KEY (UserID) REFERENCES Users(UserID)

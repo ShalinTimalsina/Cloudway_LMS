@@ -18,7 +18,7 @@
         <div class="form-field">
             <label>Email</label>
             <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" style="background:#f3f4f7;" />
-            <span class="form-hint">Email can't be changed here — contact an administrator.</span>
+            <span class="form-hint">Email can't be changed here - contact an administrator.</span>
         </div>
         <div class="form-field">
             <label for="<%= txtFullName.ClientID %>">Full name</label>

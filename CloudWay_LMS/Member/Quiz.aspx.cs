@@ -49,6 +49,19 @@ namespace CloudWay_LMS.Member
 
             litQuizTitle.Text = Server.HtmlEncode(quiz.Title);
             litPassMark.Text = quiz.PassingScore.ToString();
+            
+            if (!string.IsNullOrEmpty(quiz.Description))
+            {
+                // This is a literal control we added to Quiz.aspx
+                var litDesc = (Literal)phQuizForm.FindControl("litQuizDesc");
+                if (litDesc != null) litDesc.Text = Server.HtmlEncode(quiz.Description).Replace("\n", "<br/>");
+            }
+
+            if (quiz.TimeLimitMinutes.HasValue && quiz.TimeLimitMinutes.Value > 0)
+            {
+                var litTime = (Literal)phQuizForm.FindControl("litTimeLimit");
+                if (litTime != null) litTime.Text = "| Time limit: " + quiz.TimeLimitMinutes.Value + " mins";
+            }
 
             List<Question> questions = new QuizBLL().GetQuestionsWithOptions(QuizId);
             rptQuestions.DataSource = questions;
@@ -64,12 +77,20 @@ namespace CloudWay_LMS.Member
                 return;
 
             Question q = (Question)e.Item.DataItem;
-            CheckBoxList cbl = (CheckBoxList)e.Item.FindControl("cblOptions");
-
-            cbl.DataSource = q.Options;
-            cbl.DataTextField = "OptionText";
-            cbl.DataValueField = "OptionID";
-            cbl.DataBind();
+            
+            if (q.QuestionType == "SingleAnswer")
+            {
+                e.Item.FindControl("phOptions").Visible = false;
+                e.Item.FindControl("phSingleAnswer").Visible = true;
+            }
+            else
+            {
+                CheckBoxList cbl = (CheckBoxList)e.Item.FindControl("cblOptions");
+                cbl.DataSource = q.Options;
+                cbl.DataTextField = "OptionText";
+                cbl.DataValueField = "OptionID";
+                cbl.DataBind();
+            }
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
@@ -78,15 +99,36 @@ namespace CloudWay_LMS.Member
             // is the exact shape QuizBLL.SubmitAttempt expects (see its XML doc).
             Dictionary<int, List<int>> answers = new Dictionary<int, List<int>>();
 
+            QuizBLL _bll = new QuizBLL();
+            List<Question> questions = _bll.GetQuestionsWithOptions(QuizId);
+            
             foreach (RepeaterItem item in rptQuestions.Items)
             {
                 HiddenField hfQuestionId = (HiddenField)item.FindControl("hfQuestionId");
-                CheckBoxList cbl = (CheckBoxList)item.FindControl("cblOptions");
-
+                HiddenField hfQuestionType = (HiddenField)item.FindControl("hfQuestionType");
+                
                 int questionId = int.Parse(hfQuestionId.Value);
+                string qType = hfQuestionType.Value;
                 List<int> selected = new List<int>();
-                foreach (ListItem li in cbl.Items)
-                    if (li.Selected) selected.Add(int.Parse(li.Value));
+                
+                if (qType == "SingleAnswer")
+                {
+                    TextBox txt = (TextBox)item.FindControl("txtSingleAnswer");
+                    string typedAnswer = txt.Text.Trim().ToLower();
+                    
+                    var q = questions.FirstOrDefault(qq => qq.QuestionID == questionId);
+                    if (q != null && !string.IsNullOrEmpty(typedAnswer))
+                    {
+                        var opt = q.Options.FirstOrDefault(o => o.IsCorrect && o.OptionText.Trim().ToLower() == typedAnswer);
+                        if (opt != null) selected.Add(opt.OptionID);
+                    }
+                }
+                else
+                {
+                    CheckBoxList cbl = (CheckBoxList)item.FindControl("cblOptions");
+                    foreach (ListItem li in cbl.Items)
+                        if (li.Selected) selected.Add(int.Parse(li.Value));
+                }
 
                 answers[questionId] = selected;
             }

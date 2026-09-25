@@ -14,10 +14,10 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<QuestionOption> list = new List<QuestionOption>();
             const string sql = @"
-                SELECT OptionID, QuestionID, OptionText, IsCorrect, SortOrder
+                SELECT OptionID, QuestionID, OptionText, IsCorrect
                 FROM   QuestionOptions
                 WHERE  QuestionID = @QuestionID
-                ORDER BY SortOrder;";
+                ORDER BY OptionID;";
 
             using (SqlConnection con = DbHelper.GetConnection())
             using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))
@@ -35,8 +35,8 @@ namespace CloudWay_LMS.Data_Access_Layer
         public int Insert(QuestionOption o)
         {
             const string sql = @"
-                INSERT INTO QuestionOptions (QuestionID, OptionText, IsCorrect, SortOrder)
-                VALUES (@QuestionID, @OptionText, @IsCorrect, @SortOrder);
+                INSERT INTO QuestionOptions (QuestionID, OptionText, IsCorrect)
+                VALUES (@QuestionID, @OptionText, @IsCorrect);
                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using (SqlConnection con = DbHelper.GetConnection())
@@ -45,7 +45,6 @@ namespace CloudWay_LMS.Data_Access_Layer
                 DbHelper.AddParam(cmd, "@QuestionID", o.QuestionID);
                 DbHelper.AddParam(cmd, "@OptionText", o.OptionText);
                 DbHelper.AddParam(cmd, "@IsCorrect", o.IsCorrect);
-                DbHelper.AddParam(cmd, "@SortOrder", o.SortOrder);
                 con.Open();
                 return (int)cmd.ExecuteScalar();
             }
@@ -54,7 +53,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         public bool Update(QuestionOption o)
         {
             const string sql = @"
-                UPDATE QuestionOptions SET OptionText = @OptionText, IsCorrect = @IsCorrect, SortOrder = @SortOrder
+                UPDATE QuestionOptions SET OptionText = @OptionText, IsCorrect = @IsCorrect
                 WHERE OptionID = @OptionID;";
 
             using (SqlConnection con = DbHelper.GetConnection())
@@ -62,7 +61,6 @@ namespace CloudWay_LMS.Data_Access_Layer
             {
                 DbHelper.AddParam(cmd, "@OptionText", o.OptionText);
                 DbHelper.AddParam(cmd, "@IsCorrect", o.IsCorrect);
-                DbHelper.AddParam(cmd, "@SortOrder", o.SortOrder);
                 DbHelper.AddParam(cmd, "@OptionID", o.OptionID);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
@@ -89,8 +87,7 @@ namespace CloudWay_LMS.Data_Access_Layer
                 OptionID   = DbHelper.GetInt(r, "OptionID"),
                 QuestionID = DbHelper.GetInt(r, "QuestionID"),
                 OptionText = DbHelper.GetString(r, "OptionText"),
-                IsCorrect  = DbHelper.GetBool(r, "IsCorrect"),
-                SortOrder  = DbHelper.GetInt(r, "SortOrder")
+                IsCorrect  = DbHelper.GetBool(r, "IsCorrect")
             };
         }
     }

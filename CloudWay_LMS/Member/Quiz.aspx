@@ -9,8 +9,10 @@
 
     <asp:PlaceHolder ID="phQuizForm" runat="server">
         <h1 class="page-title"><asp:Literal ID="litQuizTitle" runat="server" /></h1>
-        <p class="page-subtitle">Pass mark: <asp:Literal ID="litPassMark" runat="server" />%</p>
-
+        <p class="page-subtitle">Pass mark: <asp:Literal ID="litPassMark" runat="server" />% 
+           <asp:Literal ID="litTimeLimit" runat="server" />
+        </p>
+        <div style="margin-bottom:20px; color:var(--muted);"><asp:Literal ID="litQuizDesc" runat="server" /></div>
         <asp:Literal ID="litMessage" runat="server" />
 
         <%-- Each question renders its own CheckBoxList of options. Grading in
@@ -23,10 +25,16 @@
             <ItemTemplate>
                 <div class="quiz-question">
                     <asp:HiddenField ID="hfQuestionId" runat="server" Value='<%# Eval("QuestionID") %>' />
-                    <h4><%# Container.ItemIndex + 1 %>. <%# Eval("QuestionText") %>
-                        <span class="card-meta">(<%# Eval("Marks") %> mark<%# ((int)Eval("Marks")) == 1 ? "" : "s" %>)</span>
-                    </h4>
-                    <asp:CheckBoxList ID="cblOptions" runat="server" />
+                    <asp:HiddenField ID="hfQuestionType" runat="server" Value='<%# Eval("QuestionType") %>' />
+                    <h4><%# Container.ItemIndex + 1 %>. <%# Eval("QuestionText") %></h4>
+                    
+                    <asp:PlaceHolder ID="phOptions" runat="server">
+                        <asp:CheckBoxList ID="cblOptions" runat="server" />
+                    </asp:PlaceHolder>
+                    
+                    <asp:PlaceHolder ID="phSingleAnswer" runat="server" Visible="false">
+                        <asp:TextBox ID="txtSingleAnswer" runat="server" CssClass="form-control" placeholder="Type your answer here..." />
+                    </asp:PlaceHolder>
                 </div>
             </ItemTemplate>
         </asp:Repeater>

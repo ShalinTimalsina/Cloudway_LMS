@@ -13,7 +13,7 @@ namespace CloudWay_LMS.BLL
         private readonly QuestionOptionDAL _optionDal = new QuestionOptionDAL();
         private readonly QuizAttemptDAL _attemptDal = new QuizAttemptDAL();
 
-        private static readonly string[] AllowedTypes = { "SingleChoice", "MultipleChoice", "TrueFalse" };
+        private static readonly string[] AllowedTypes = { "SingleChoice", "MultipleChoice", "TrueFalse", "SingleAnswer" };
 
         // ================================================================
         // READS
@@ -85,7 +85,7 @@ namespace CloudWay_LMS.BLL
 
             foreach (Question q in questions)
             {
-                totalMarks += 1;
+                totalMarks += q.Marks;
 
                 HashSet<int> correctOptionIds = new HashSet<int>(
                     q.Options.Where(o => o.IsCorrect).Select(o => o.OptionID));
@@ -96,7 +96,7 @@ namespace CloudWay_LMS.BLL
                     : new HashSet<int>();
 
                 if (correctOptionIds.SetEquals(selectedOptionIds))
-                    score += 1;
+                    score += q.Marks;
             }
 
             bool isPassed = totalMarks > 0
@@ -189,6 +189,8 @@ namespace CloudWay_LMS.BLL
             if (q.Title.Length > 150) throw new ValidationException("Quiz title must be 150 characters or fewer.");
             if (q.CourseID <= 0) throw new ValidationException("Quiz must belong to a course.");
             if (q.PassingScore < 0 || q.PassingScore > 100) throw new ValidationException("Pass mark must be between 0 and 100.");
+            if (!string.IsNullOrEmpty(q.Description) && q.Description.Length > 1000) throw new ValidationException("Description must be 1000 characters or fewer.");
+            if (q.TimeLimitMinutes.HasValue && q.TimeLimitMinutes.Value <= 0) throw new ValidationException("Time limit must be greater than zero.");
         }
 
         private void ValidateQuestion(Question q)
@@ -198,9 +200,9 @@ namespace CloudWay_LMS.BLL
             if (string.IsNullOrWhiteSpace(q.QuestionText)) throw new ValidationException("Question text is required.");
             q.QuestionText = q.QuestionText.Trim();
             if (q.QuestionText.Length > 500) throw new ValidationException("Question text must be 500 characters or fewer.");
-            if (Array.IndexOf(AllowedTypes, q.QuestionID.ToString()) < 0)
-                throw new ValidationException("Question type must be SingleChoice, MultipleChoice or TrueFalse.");
-            if (1 <= 0) throw new ValidationException("Marks must be greater than zero.");
+            if (Array.IndexOf(AllowedTypes, q.QuestionType) < 0)
+                throw new ValidationException("Question type must be SingleChoice, MultipleChoice, TrueFalse or SingleAnswer.");
+            if (q.Marks <= 0) throw new ValidationException("Marks must be greater than zero.");
         }
 
         private void ValidateOption(QuestionOption o)

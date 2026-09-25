@@ -113,14 +113,6 @@ namespace CloudWay_LMS.Admin
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtOrderIndex;
 
-        /// <summary>
-        /// txtDurationOldOld control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDurationOldOld;
 
         /// <summary>
         /// btnSave control.

@@ -6,6 +6,9 @@ namespace CloudWay_LMS.Models
         public int    CourseID { get; set; }
         public string Title    { get; set; }
         public int    PassingScore { get; set; }
+        public string Description  { get; set; }
+        public int?   TimeLimitMinutes { get; set; }
+        public bool   IsPublished  { get; set; }
         
 
         // Joined / derived

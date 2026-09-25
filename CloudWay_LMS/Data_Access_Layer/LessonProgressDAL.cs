@@ -8,7 +8,7 @@ using System.Web;
 
 namespace CloudWay_LMS.Data_Access_Layer
 {
-    public class LessonProgressDAL : PersistentConnection
+    public class LessonProgressDAL
     {
 
        

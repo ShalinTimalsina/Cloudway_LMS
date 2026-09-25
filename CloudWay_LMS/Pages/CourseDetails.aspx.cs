@@ -49,9 +49,9 @@ namespace CloudWay_LMS.Pages
                 return;
             }
 
-            litCategory.Text = Server.HtmlEncode(course.CategoryID.ToString());
+            litCategory.Text = Server.HtmlEncode(course.CategoryName);
             litTitle.Text = Server.HtmlEncode(course.Title);
-            litMeta.Text = Server.HtmlEncode(course.CourseID.ToString());
+            litMeta.Text = "Self-paced";
             litDescription.Text = Server.HtmlEncode(course.Description);
 
             if (!course.IsPublished)

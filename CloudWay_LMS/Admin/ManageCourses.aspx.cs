@@ -65,7 +65,7 @@ namespace CloudWay_LMS.Admin
                 {
                     CourseID = int.Parse(hfCourseId.Value),
                     Title = txtTitle.Text,
-                    Description = txtTitle.Text,
+                    Description = txtDescription.Text,
                     CategoryID = int.Parse(ddlCategory.SelectedValue),
                     // A newly uploaded file wins; otherwise keep whatever path
                     // was already on the course (shown read-only in txtThumbnail).
@@ -134,7 +134,7 @@ namespace CloudWay_LMS.Admin
 
                 hfCourseId.Value = c.CourseID.ToString();
                 txtTitle.Text = c.Title;
-                txtTitle.Text = c.Description;
+                txtDescription.Text = c.Description;
                 ddlCategory.SelectedValue = c.CategoryID.ToString();
                 txtThumbnail.Text = c.ThumbnailPath;
                 chkIsPublished.Checked = c.IsPublished;
@@ -169,7 +169,7 @@ namespace CloudWay_LMS.Admin
         {
             hfCourseId.Value = "0";
             txtTitle.Text = "";
-            txtTitle.Text = "";
+            txtDescription.Text = "";
             txtThumbnail.Text = "";
             chkIsPublished.Checked = false;
             imgThumbnailPreview.Visible = false;

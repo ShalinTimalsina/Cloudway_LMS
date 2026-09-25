@@ -13,7 +13,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<Enrollment> list = new List<Enrollment>();
             const string sql = @"
-                SELECT e.EnrollmentID, e.UserID, e.CourseID, e.EnrolledAt, e.ProgressPercent, e.
+                SELECT e.EnrollmentID, e.UserID, e.CourseID, e.EnrolledAt, e.ProgressPercent,
                        c.Title AS CourseTitle, c.ThumbnailPath
                 FROM   Enrollments e JOIN Courses c ON e.CourseID = c.CourseID
                 WHERE  e.UserID = @UserID
@@ -36,7 +36,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<Enrollment> list = new List<Enrollment>();
             const string sql = @"
-                SELECT EnrollmentID, UserID, CourseID, EnrolledAt, ProgressPercent, CompletedAt
+                SELECT EnrollmentID, UserID, CourseID, EnrolledAt, ProgressPercent
                 FROM   Enrollments
                 WHERE  CourseID = @CourseID
                 ORDER BY EnrolledAt DESC;";
@@ -92,15 +92,13 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             const string sql = @"
                 UPDATE Enrollments
-                SET ProgressPercent = @ProgressPercent,
-                    CompletedAt = CASE WHEN @MarkCompleted = 1 THEN SYSUTCDATETIME() ELSE CompletedAt END
+                SET ProgressPercent = @ProgressPercent
                 WHERE EnrollmentID = @EnrollmentID;";
 
             using (SqlConnection con = DbHelper.GetConnection())
             using (SqlCommand cmd = DbHelper.CreateCommand(con, sql))
             {
                 DbHelper.AddParam(cmd, "@ProgressPercent", progressPercent);
-                DbHelper.AddParam(cmd, "@MarkCompleted", markCompleted);
                 DbHelper.AddParam(cmd, "@EnrollmentID", enrollmentId);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;

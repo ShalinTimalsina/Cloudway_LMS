@@ -14,7 +14,7 @@
                     <h3 class="card-title"><%# Eval("CourseTitle") %></h3>
                     <p class="card-meta">
                         <%# ((bool)Eval("IsCompleted")) ? "Completed" : "In progress" %>
-                        — <%# Eval("ProgressPercent", "{0:0}") %>%
+                        - <%# Eval("ProgressPercent", "{0:0}") %>%
                     </p>
                     <div style="background:var(--border); border-radius:999px; height:8px; overflow:hidden;">
                         <div style='background:var(--accent); height:100%; width:<%# Eval("ProgressPercent", "{0:0}") %>%;'></div>
@@ -39,7 +39,7 @@
             <Columns>
                 <asp:BoundField DataField="QuizTitle" HeaderText="Quiz" />
                 <asp:TemplateField HeaderText="Score">
-                    <ItemTemplate><%# Eval("Score") %> / <%# Eval("TotalMarks") %> (<%# Eval("PercentScore", "{0:0}") %>%)</ItemTemplate>
+                    <ItemTemplate><%# Eval("Score") %></ItemTemplate>
                 </asp:TemplateField>
                 <asp:TemplateField HeaderText="Result">
                     <ItemTemplate>

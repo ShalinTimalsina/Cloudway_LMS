@@ -22,24 +22,8 @@
             <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control" />
         </div>
         <div class="form-field">
-            <label for="<%= txtDescriptionription.ClientID %>">Short description</label>
-            <asp:TextBox ID="txtDescriptionription" runat="server" CssClass="form-control" MaxLength="300" />
-        </div>
-        <div class="form-field">
-            <label for="<%= txtDescriptionription.ClientID %>">Full description</label>
-            <asp:TextBox ID="txtDescriptionription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="4" />
-        </div>
-        <div class="form-field">
-            <label for="<%= txtDifficulty.ClientID %>">Difficulty</label>
-            <asp:DropDownList ID="txtDifficulty" runat="server" CssClass="form-control">
-                <asp:ListItem Text="Beginner" Value="Beginner" />
-                <asp:ListItem Text="Intermediate" Value="Intermediate" />
-                <asp:ListItem Text="Advanced" Value="Advanced" />
-            </asp:DropDownList>
-        </div>
-        <div class="form-field">
-            <label for="<%= txtDurationOld.ClientID %>">Duration (minutes)</label>
-            <asp:TextBox ID="txtDurationOld" runat="server" CssClass="form-control" TextMode="Number" />
+            <label for="<%= txtDescription.ClientID %>">Description</label>
+            <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="4" />
         </div>
         <div class="form-field">
             <label for="<%= txtThumbnail.ClientID %>">Thumbnail</label>

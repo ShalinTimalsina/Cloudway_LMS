@@ -13,7 +13,7 @@
         </div>
         <div class="form-field" style="display:inline-block; width:260px; margin-right:1rem;">
             <label for="<%= txtSearch.ClientID %>">Search</label>
-            <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" placeholder="Keyword…" />
+            <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" placeholder="Keyword..." />
         </div>
         <asp:Button ID="btnSearch" runat="server" Text="Search" CssClass="btn"
                     OnClick="Filter_Changed" style="vertical-align:bottom;" />

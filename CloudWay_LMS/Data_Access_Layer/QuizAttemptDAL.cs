@@ -10,8 +10,8 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<QuizAttempt> list = new List<QuizAttempt>();
             const string sql = @"
-                SELECT a.AttemptID, a.UserID, a.QuizID, a.Score, a. a. a.AttemptedAt,
-                       q.Title AS QuizTitle
+                SELECT a.AttemptID, a.UserID, a.QuizID, a.Score, a.TotalMarks, a.IsPassed, a.AttemptedAt,
+                       q.Title AS QuizTitle, q.PassingScore
                 FROM   QuizAttempts a JOIN Quizzes q ON a.QuizID = q.QuizID
                 WHERE  a.UserID = @UserID
                 ORDER BY a.AttemptedAt DESC;";
@@ -33,7 +33,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         {
             List<QuizAttempt> list = new List<QuizAttempt>();
             const string sql = @"
-                SELECT AttemptID, UserID, QuizID, Score,   AttemptedAt
+                SELECT AttemptID, UserID, QuizID, Score, TotalMarks, IsPassed, AttemptedAt
                 FROM   QuizAttempts
                 WHERE  QuizID = @QuizID
                 ORDER BY AttemptedAt DESC;";
@@ -57,8 +57,8 @@ namespace CloudWay_LMS.Data_Access_Layer
         public int Insert(QuizAttempt a)
         {
             const string sql = @"
-                INSERT INTO QuizAttempts (UserID, QuizID, Score,   AttemptedAt)
-                VALUES (@UserID, @QuizID, @Score, @ @ SYSUTCDATETIME());
+                INSERT INTO QuizAttempts (UserID, QuizID, Score, TotalMarks, IsPassed, AttemptedAt)
+                VALUES (@UserID, @QuizID, @Score, @TotalMarks, @IsPassed, SYSUTCDATETIME());
                 SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
             using (SqlConnection con = DbHelper.GetConnection())
@@ -86,7 +86,15 @@ namespace CloudWay_LMS.Data_Access_Layer
                 IsPassed    = DbHelper.GetBool(r, "IsPassed"),
                 AttemptedAt = DbHelper.GetDate(r, "AttemptedAt")
             };
+            if (HasColumn(r, "QuizTitle")) a.QuizTitle = DbHelper.GetString(r, "QuizTitle");
             return a;
+        }
+
+        private bool HasColumn(System.Data.IDataRecord r, string col)
+        {
+            for (int i = 0; i < r.FieldCount; i++)
+                if (r.GetName(i).Equals(col)) return true;
+            return false;
         }
     }
 }
