@@ -20,9 +20,7 @@
             <label for="<%= txtDescription.ClientID %>">Description</label>
             <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="2" MaxLength="250" />
         </div>
-        <div class="form-field">
-            <asp:CheckBox ID="chkIsActive" runat="server" Checked="true" Text="Active (visible to learners)" />
-        </div>
+        
 
         <asp:Button ID="btnSave" runat="server" Text="Save" CssClass="btn" OnClick="btnSave_Click" />
         <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-outline" OnClick="btnCancel_Click" CausesValidation="false" />
@@ -37,9 +35,7 @@
                 <asp:BoundField DataField="Name" HeaderText="Name" />
                 <asp:BoundField DataField="Description" HeaderText="Description" />
                 <asp:BoundField DataField="CourseCount" HeaderText="Courses" />
-                <asp:TemplateField HeaderText="Active">
-                    <ItemTemplate><%# (bool)Eval("IsActive") ? "Yes" : "No" %></ItemTemplate>
-                </asp:TemplateField>
+                
                 <asp:TemplateField>
                     <ItemTemplate>
                         <asp:LinkButton runat="server" CommandName="EditRow" CommandArgument='<%# Eval("CategoryID") %>' CssClass="btn btn-outline btn-small" CausesValidation="false">Edit</asp:LinkButton>
@@ -51,4 +47,6 @@
         </asp:GridView>
     </div>
 </asp:Content>
+
+
 

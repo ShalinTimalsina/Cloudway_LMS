@@ -103,8 +103,9 @@ namespace CloudWay_LMS.Admin
             hfCategoryId.Value = "0";
             txtName.Text = "";
             txtDescription.Text = "";
-            chkIsActive.Checked = true;
+            
             litFormTitle.Text = "Add a category";
         }
     }
 }
+
