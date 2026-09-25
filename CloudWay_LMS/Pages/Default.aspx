@@ -28,8 +28,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <section class="hero">
-        <h1 class="page-title">Welcome</h1>
-        <p class="page-subtitle">Browse our featured courses below, or see the full catalogue.</p>
+        <h1 class="page-title">Master Cloud Computing</h1>
+        <p class="page-subtitle">Prepare for AWS certifications with comprehensive courses, quizzes, and practical lessons designed for university students.</p>
     </section>
 
     <section aria-label="Featured courses">
