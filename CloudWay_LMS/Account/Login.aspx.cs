@@ -16,7 +16,7 @@ namespace CloudWay_LMS.Account
         {
             try
             {
-                new AuthBLL().Login(txtEmail.Text, txtPassword.Text);
+                var u = new AuthBLL().Login(txtEmail.Text, txtPassword.Text);
 
                 // Open redirect guard: only follow ReturnUrl if it's a LOCAL path.
                 // Without this check, a link like Login.aspx?ReturnUrl=https://evil.example
@@ -38,3 +38,4 @@ namespace CloudWay_LMS.Account
         }
     }
 }
+
