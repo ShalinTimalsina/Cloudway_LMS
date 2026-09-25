@@ -34,7 +34,7 @@
                       AllowPaging="True" OnPageIndexChanging="gvCategories_PageIndexChanging">
             <PagerStyle CssClass="table-pager" />
             <Columns>
-                <asp:BoundField DataField="CategoryName" HeaderText="Name" />
+                <asp:BoundField DataField="Name" HeaderText="Name" />
                 <asp:BoundField DataField="Description" HeaderText="Description" />
                 <asp:BoundField DataField="CourseCount" HeaderText="Courses" />
                 <asp:TemplateField HeaderText="Active">
@@ -51,3 +51,4 @@
         </asp:GridView>
     </div>
 </asp:Content>
+

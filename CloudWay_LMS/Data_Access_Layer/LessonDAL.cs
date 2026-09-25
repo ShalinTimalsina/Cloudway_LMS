@@ -68,7 +68,7 @@ namespace CloudWay_LMS.Data_Access_Layer
             const string sql = @"
                 UPDATE Lessons
                 SET Title = @Title, Content = @Content, VideoUrl = @VideoUrl,
-                    OrderIndex = @OrderIndex = @DurationMinutes
+                    OrderIndex = @OrderIndex
                 WHERE LessonID = @LessonID;";
 
             using (SqlConnection con = DbHelper.GetConnection())

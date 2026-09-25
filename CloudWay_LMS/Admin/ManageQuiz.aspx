@@ -94,7 +94,7 @@
                           DataKeyNames="QuestionID" OnRowCommand="gvQuestions_RowCommand">
                 <Columns>
                     <asp:BoundField DataField="QuestionText" HeaderText="Question" />
-                    <asp:BoundField DataField="QuestionType" HeaderText="Type" />
+                    
                     <asp:BoundField DataField="Marks" HeaderText="Marks" />
                     <asp:TemplateField>
                         <ItemTemplate>
@@ -138,7 +138,7 @@
             <asp:GridView ID="gvOptions" runat="server" AutoGenerateColumns="false" CssClass="table-admin"
                           DataKeyNames="OptionID" OnRowCommand="gvOptions_RowCommand">
                 <Columns>
-                    <asp:BoundField DataField="SortOrder" HeaderText="#" />
+                    
                     <asp:BoundField DataField="OptionText" HeaderText="Option" />
                     <asp:TemplateField HeaderText="Correct">
                         <ItemTemplate><%# (bool)Eval("IsCorrect") ? "✔" : "" %></ItemTemplate>
@@ -155,3 +155,4 @@
         </div>
     </asp:PlaceHolder>
 </asp:Content>
+

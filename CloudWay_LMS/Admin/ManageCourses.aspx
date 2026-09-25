@@ -66,7 +66,7 @@
             <Columns>
                 <asp:BoundField DataField="Title" HeaderText="Title" />
                 <asp:BoundField DataField="CategoryName" HeaderText="Category" />
-                <asp:BoundField DataField="DifficultyLevel" HeaderText="Difficulty" />
+                
                 <asp:BoundField DataField="EnrolmentCount" HeaderText="Enrolled" />
                 <asp:TemplateField HeaderText="Status">
                     <ItemTemplate>
@@ -86,3 +86,4 @@
         </asp:GridView>
     </div>
 </asp:Content>
+

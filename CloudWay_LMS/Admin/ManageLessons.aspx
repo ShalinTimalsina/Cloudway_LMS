@@ -84,7 +84,7 @@
                               DataKeyNames="ResourceID" OnRowCommand="gvResources_RowCommand" style="margin-top:1rem;">
                     <Columns>
                         <asp:BoundField DataField="Title" HeaderText="Title" />
-                        <asp:BoundField DataField="ResourceType" HeaderText="Type" />
+                        
                         <asp:TemplateField HeaderText="File">
                             <ItemTemplate><a href='<%# ResolveUrl((string)Eval("FilePath")) %>' target="_blank" rel="noopener">Download</a></ItemTemplate>
                         </asp:TemplateField>
@@ -104,9 +104,9 @@
             <asp:GridView ID="gvLessons" runat="server" AutoGenerateColumns="false" CssClass="table-admin"
                           DataKeyNames="LessonID" OnRowCommand="gvLessons_RowCommand">
                 <Columns>
-                    <asp:BoundField DataField="SortOrder" HeaderText="#" />
+                    <asp:BoundField DataField="OrderIndex" HeaderText="#" />
                     <asp:BoundField DataField="Title" HeaderText="Title" />
-                    <asp:BoundField DataField="DurationMinutes" HeaderText="Minutes" />
+                    
                     <asp:TemplateField>
                         <ItemTemplate>
                             <asp:LinkButton runat="server" CommandName="EditRow" CommandArgument='<%# Eval("LessonID") %>' CssClass="btn btn-outline btn-small" CausesValidation="false">Edit</asp:LinkButton>
@@ -119,3 +119,4 @@
         </div>
     </asp:PlaceHolder>
 </asp:Content>
+
