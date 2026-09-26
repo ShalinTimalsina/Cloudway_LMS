@@ -2,9 +2,8 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <h1 class="page-title">Create an Account</h1>
-
     <div class="form-card">
+        <h1 class="page-title" style="text-align:center; margin-bottom: 1.5rem;">Create an Account</h1>
         <asp:Literal ID="litMessage" runat="server" />
 
         <%-- ValidationSummary + per-field validators are the CLIENT-side layer
@@ -34,12 +33,13 @@
                 ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
         </div>
         <div class="form-field">
-            <label for="<%= txtPhone.ClientID %>">Phone (optional)</label>
-            <asp:TextBox ID="txtPhone" runat="server" CssClass="form-control" />
-        </div>
-        <div class="form-field">
             <label for="<%= txtPassword.ClientID %>">Password</label>
-            <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" />
+            <div class="pwd-container">
+                <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" style="width:100%;" />
+                <button type="button" class="pwd-toggle" onclick="togglePassword(this)" aria-label="Toggle password visibility">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
             <span class="form-hint">At least 8 characters.</span>
             <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="txtPassword"
                 CssClass="field-error" Display="Dynamic" ErrorMessage="Password is required." />
@@ -49,7 +49,12 @@
         </div>
         <div class="form-field">
             <label for="<%= txtConfirmPassword.ClientID %>">Confirm password</label>
-            <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="form-control" TextMode="Password" />
+            <div class="pwd-container">
+                <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="form-control" TextMode="Password" style="width:100%;" />
+                <button type="button" class="pwd-toggle" onclick="togglePassword(this)" aria-label="Toggle password visibility">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
             <asp:RequiredFieldValidator ID="rfvConfirmPassword" runat="server" ControlToValidate="txtConfirmPassword"
                 CssClass="field-error" Display="Dynamic" ErrorMessage="Please confirm your password." />
             <asp:CompareValidator ID="cvPasswordMatch" runat="server" ControlToValidate="txtConfirmPassword"
@@ -57,8 +62,8 @@
                 ErrorMessage="Passwords do not match." />
         </div>
 
-        <asp:Button ID="btnRegister" runat="server" Text="Register" CssClass="btn" OnClick="btnRegister_Click" />
-        <p class="form-hint">Already have an account? <a href="<%= ResolveUrl("~/Account/Login.aspx") %>">Log in</a>.</p>
+        <asp:Button ID="btnRegister" runat="server" Text="Register" CssClass="btn" style="width:100%; margin-top: 1rem;" OnClick="btnRegister_Click" />
+        <p class="form-hint" style="margin-top:1.5rem; text-align:center;">Already have an account? <a href="<%= ResolveUrl("~/Account/Login.aspx") %>">Log in here</a>.</p>
     </div>
 </asp:Content>
 

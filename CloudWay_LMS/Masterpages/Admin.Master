@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Poppins:wght@600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="<%= ResolveUrl("~/Content/site.css") %>" />
+    <link rel="stylesheet" href="<%= ResolveUrl("~/Content/site.css?v=10") %>" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body>
@@ -20,7 +20,11 @@
         <header class="site-header">
             <div class="container header-inner">
                 <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>" class="brand">
-                    <span class="brand-text">CloudWay LMS Admin</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 36" width="140" height="36" fill="none">
+                      <path d="M12 24C9.79 24 8 22.21 8 20C8 18.04 9.42 16.42 11.31 16.07C11.83 12.65 14.77 10 18.33 10C21.1 10 23.51 11.61 24.63 13.96C25.43 13.35 26.42 13 27.5 13C29.98 13 32 15.02 32 17.5C32 17.84 31.96 18.17 31.89 18.49C33.68 19.18 35 20.94 35 23C35 25.76 32.76 28 30 28H14" stroke="#13A89E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M17 21L21 17L25 21" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <text x="44" y="24" font-family="'Poppins', sans-serif" font-weight="600" font-size="18" fill="#FFFFFF" letter-spacing="-0.01em">Cloud<tspan fill="#13A89E">Way</tspan></text>
+                    </svg>
                 </a>
                 <span class="nav-welcome">
                     <asp:Literal ID="litAdminName" runat="server" /> |
@@ -32,6 +36,7 @@
 
         <div class="admin-shell">
             <aside class="admin-sidebar">
+                <a href="<%= ResolveUrl("~/Admin/Dashboard.aspx") %>">Dashboard</a>
                 <a href="<%= ResolveUrl("~/Admin/ManageCategories.aspx") %>">Categories</a>
                 <a href="<%= ResolveUrl("~/Admin/ManageCourses.aspx") %>">Courses</a>
                 <a href="<%= ResolveUrl("~/Admin/ManageLessons.aspx") %>">Lessons</a>
@@ -89,6 +94,81 @@
                 })(elements[i]);
             }
         });
+
+        // Highlight active sidebar link
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname.toLowerCase();
+            const links = document.querySelectorAll('.admin-sidebar a');
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && href.indexOf('Default.aspx') === -1) {
+                    const normalizedHref = href.toLowerCase().replace('~', '').split('?')[0];
+                    if (currentPath.includes(normalizedHref)) {
+                        link.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Initialize Custom Dropdowns
+        function initCustomSelects() {
+            var selects = document.querySelectorAll('select.form-control');
+            selects.forEach(function (select) {
+                if (select.closest('.custom-select-wrapper')) return;
+                var wrapper = document.createElement('div');
+                wrapper.className = 'custom-select-wrapper';
+                select.parentNode.insertBefore(wrapper, select);
+                wrapper.appendChild(select);
+                select.style.display = 'none';
+
+                var trigger = document.createElement('div');
+                trigger.className = 'custom-select-trigger form-control';
+                trigger.innerHTML = '<span>' + (select.options[select.selectedIndex]?.text || 'Select') + '</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+                wrapper.appendChild(trigger);
+
+                var menu = document.createElement('div');
+                menu.className = 'custom-select-menu';
+                Array.from(select.options).forEach(function (option, index) {
+                    var item = document.createElement('div');
+                    item.className = 'custom-select-option' + (option.selected ? ' selected' : '');
+                    item.dataset.value = option.value;
+                    item.dataset.index = index;
+                    item.textContent = option.text;
+                    item.addEventListener('click', function () {
+                        select.selectedIndex = this.dataset.index;
+                        trigger.querySelector('span').textContent = this.textContent;
+                        var prevSelected = menu.querySelector('.selected');
+                        if (prevSelected) prevSelected.classList.remove('selected');
+                        this.classList.add('selected');
+                        wrapper.classList.remove('open');
+                        
+                        var event = new Event('change', { bubbles: true });
+                        select.dispatchEvent(event);
+                    });
+                    menu.appendChild(item);
+                });
+                wrapper.appendChild(menu);
+
+                trigger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var wasOpen = wrapper.classList.contains('open');
+                    document.querySelectorAll('.custom-select-wrapper').forEach(function (w) {
+                        w.classList.remove('open');
+                    });
+                    if (!wasOpen) wrapper.classList.add('open');
+                });
+            });
+
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.custom-select-wrapper').forEach(function (w) {
+                    w.classList.remove('open');
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', initCustomSelects);
+        if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initCustomSelects);
+        }
     </script>
 </body>
 </html>

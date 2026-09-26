@@ -69,7 +69,7 @@ namespace CloudWay_LMS.Data_Access_Layer
         }
 
         /// <summary>Insert; relies on the UNIQUE(UserID, CourseID) constraint to stop
-        /// double enrolment at the database level even if a bug lets two requests
+        /// double enrollment at the database level even if a bug lets two requests
         /// race the BLL's IsEnrolled check — catch SqlException 2627 for a friendly message.</summary>
         public int Insert(int userId, int courseId)
         {

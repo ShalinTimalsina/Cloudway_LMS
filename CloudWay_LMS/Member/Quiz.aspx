@@ -29,7 +29,7 @@
                     <h4><%# Container.ItemIndex + 1 %>. <%# Eval("QuestionText") %></h4>
                     
                     <asp:PlaceHolder ID="phOptions" runat="server">
-                        <asp:CheckBoxList ID="cblOptions" runat="server" />
+                        <asp:RadioButtonList ID="rblOptions" runat="server" RepeatLayout="Flow" CssClass="quiz-options-grid" />
                     </asp:PlaceHolder>
                     
                     <asp:PlaceHolder ID="phSingleAnswer" runat="server" Visible="false">
@@ -43,11 +43,24 @@
     </asp:PlaceHolder>
 
     <asp:PlaceHolder ID="phResult" runat="server" Visible="false">
-        <div class="quiz-result">
-            <p class="quiz-score"><asp:Literal ID="litScore" runat="server" /></p>
-            <p><asp:Literal ID="litOutcome" runat="server" /></p>
-            <a class="btn btn-outline" href="<%= ResolveUrl("~/Pages/Courses.aspx") %>">Back to courses</a>
+        <div class="quiz-result form-card" style="text-align: center; padding: 4rem 2rem; margin-top: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            <h2>Quiz Results</h2>
+            <div style="margin: 2rem 0;">
+                <p class="quiz-score" style="font-size: 4rem; font-weight: bold; color: var(--brand); line-height: 1;"><asp:Literal ID="litScore" runat="server" /></p>
+                <p style="font-size: 1.25rem; font-weight: 500; margin-top: 1rem;"><asp:Literal ID="litOutcome" runat="server" /></p>
+            </div>
+            <div style="display:flex; justify-content:center; gap: 1rem; flex-wrap: wrap;">
+                <a href="<%= Request.RawUrl %>" class="btn btn-outline">Retake Quiz</a>
+                <%
+                    int qId = 0;
+                    int.TryParse(Request.QueryString["id"], out qId);
+                    var qz = new CloudWay_LMS.BLL.QuizBLL().GetById(qId);
+                    int cId = qz != null ? qz.CourseID : 0;
+                %>
+                <a href="<%= ResolveUrl("~/Pages/CourseDetails.aspx?id=" + cId) %>" class="btn">Return to Course</a>
+            </div>
         </div>
     </asp:PlaceHolder>
+
 </asp:Content>
 

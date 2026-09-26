@@ -2,6 +2,12 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="breadcrumb-bar" style="padding-top:1rem;">
+        <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>">Home</a>
+        <span class="breadcrumb-separator"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        <span class="breadcrumb-current">Contact Us</span>
+    </div>
+
     <h1 class="page-title">Contact Us</h1>
     <p class="page-subtitle">Questions, suggestions, or something not working? Let us know.</p>
 

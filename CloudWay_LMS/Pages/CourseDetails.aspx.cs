@@ -25,11 +25,13 @@ namespace CloudWay_LMS.Pages
             }
         }
 
-        // Populated by BindEnrolmentState, read by IsLessonDone (called from
+        // Populated by BindEnrollmentState, read by IsLessonDone (called from
         // the lesson Repeater's markup) — computed once per page load rather
         // than re-querying per row.
         private Enrollment _currentEnrollment;
         private List<int> _completedLessonIds = new List<int>();
+
+        protected Course CurrentCourse;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -40,41 +42,41 @@ namespace CloudWay_LMS.Pages
         private void LoadCourse()
         {
             var courseBll = new CourseBLL();
-            Course course = AuthBLL.IsAdmin ? courseBll.GetById(CourseId) : courseBll.GetPublishedById(CourseId);
+            CurrentCourse = AuthBLL.IsAdmin ? courseBll.GetById(CourseId) : courseBll.GetPublishedById(CourseId);
 
-            if (course == null)
+            if (CurrentCourse == null)
             {
                 phNotFound.Visible = true;
                 phCourse.Visible = false;
                 return;
             }
 
-            litCategory.Text = Server.HtmlEncode(course.CategoryName);
-            litTitle.Text = Server.HtmlEncode(course.Title);
+            litCategory.Text = Server.HtmlEncode(CurrentCourse.CategoryName);
+            litTitle.Text = Server.HtmlEncode(CurrentCourse.Title);
             litMeta.Text = "Self-paced";
-            litDescription.Text = Server.HtmlEncode(course.Description);
+            litDescription.Text = Server.HtmlEncode(CurrentCourse.Description);
 
-            if (!course.IsPublished)
+            if (!CurrentCourse.IsPublished)
                 litMessage.Text = "<div class=\"alert alert-error\">This course is a draft — only admins can see it.</div>";
 
-            rptTags.DataSource = new TagBLL().GetByCourse(course.CourseID);
+            rptTags.DataSource = new TagBLL().GetByCourse(CurrentCourse.CourseID);
             rptTags.DataBind();
 
-            // Enrolment state first — the lesson list's checkmarks depend on it.
-            BindEnrolmentState(course.CourseID);
+            // Enrollment state first — the lesson list's checkmarks depend on it.
+            BindEnrollmentState(CurrentCourse.CourseID);
 
-            var lessons = new LessonBLL().GetByCourse(course.CourseID);
+            var lessons = new LessonBLL().GetByCourse(CurrentCourse.CourseID);
             rptLessons.DataSource = lessons;
             rptLessons.DataBind();
             litNoLessons.Visible = lessons.Count == 0;
 
-            var quizzes = new QuizBLL().GetByCourse(course.CourseID);
+            var quizzes = new QuizBLL().GetByCourse(CurrentCourse.CourseID);
             rptQuizzes.DataSource = quizzes;
             rptQuizzes.DataBind();
             litNoQuizzes.Visible = quizzes.Count == 0;
         }
 
-        private void BindEnrolmentState(int courseId)
+        private void BindEnrollmentState(int courseId)
         {
             if (!AuthBLL.IsLoggedIn)
             {

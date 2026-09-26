@@ -138,7 +138,7 @@ namespace CloudWay_LMS.Data_Access_Layer
                         c.CategoryID, c.ThumbnailPath, c.IsPublished,
                         c.CreatedBy, c.CreatedAt, cat.Name AS CategoryName,
                         u.FullName AS CreatedByName,
-                        (SELECT COUNT(*) FROM Enrollments e WHERE e.CourseID = c.CourseID) AS EnrolmentCount
+                        (SELECT COUNT(*) FROM Enrollments e WHERE e.CourseID = c.CourseID) AS EnrollmentCount
                 FROM    Courses c
                         INNER JOIN Categories cat ON c.CategoryID = cat.CategoryID
                         INNER JOIN Users      u   ON c.CreatedBy  = u.UserID
@@ -154,7 +154,7 @@ namespace CloudWay_LMS.Data_Access_Layer
                     {
                         Course c = Map(r);
                         c.CreatedByName = DbHelper.GetString(r, "CreatedByName");
-                        c.EnrolmentCount = DbHelper.GetInt(r, "EnrolmentCount");
+                        c.EnrollmentCount = DbHelper.GetInt(r, "EnrollmentCount");
                         list.Add(c);
                     }
                 }

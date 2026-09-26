@@ -25,18 +25,26 @@ namespace CloudWay_LMS.BLL
         /// are preserved exactly as they were.</summary>
         public void UpdateProfile(int userId, string fullName, string phoneNumber)
         {
-            User u = _dal.SelectById(userId);
-            if (u == null) throw new ValidationException("User not found.");
+            try
+            {
+                if (_dal == null) throw new Exception("DEBUG: _dal is null");
+                User u = _dal.SelectById(userId);
+                if (u == null) throw new ValidationException("User not found.");
 
-            if (string.IsNullOrWhiteSpace(fullName))
-                throw new ValidationException("Full name is required.");
-            if (fullName.Trim().Length > 100)
-                throw new ValidationException("Full name must be 100 characters or fewer.");
+                if (string.IsNullOrWhiteSpace(fullName))
+                    throw new ValidationException("Full name is required.");
+                if (fullName.Trim().Length > 100)
+                    throw new ValidationException("Full name must be 100 characters or fewer.");
 
-            u.FullName = fullName.Trim();
-            
-
-            _dal.Update(u); // IsActive passes through unchanged — Update never touches RoleID either
+                u.FullName = fullName.Trim();
+                
+                _dal.Update(u);
+            }
+            catch (ValidationException) { throw; }
+            catch (Exception ex)
+            {
+                throw new Exception("DEBUG inside UpdateProfile: " + ex.Message, ex);
+            }
         }
 
         /// <summary>currentAdminUserId lets the page block an admin from

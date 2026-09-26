@@ -9,9 +9,10 @@
          run the (empty) password fields' RequiredFieldValidators below and
          block the postback with unrelated errors — a classic Web Forms trap
          when more than one button/section exists on a single page. --%>
-    <div class="form-card">
-        <h3>Profile details</h3>
-        <asp:Literal ID="litProfileMessage" runat="server" />
+    <div style="display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-start;">
+        <div class="form-card" style="margin:0; flex:1; min-width:300px; max-width:100%;">
+            <h3>Profile details</h3>
+            <asp:Literal ID="litProfileMessage" runat="server" />
         <asp:ValidationSummary ID="valProfileSummary" runat="server" ValidationGroup="ProfileForm"
                                CssClass="validation-summary" HeaderText="Please fix the following:" DisplayMode="BulletList" />
 
@@ -26,16 +27,11 @@
             <asp:RequiredFieldValidator ID="rfvFullName" runat="server" ControlToValidate="txtFullName"
                 ValidationGroup="ProfileForm" CssClass="field-error" Display="Dynamic" ErrorMessage="Full name is required." />
         </div>
-        <div class="form-field">
-            <label for="<%= txtPhone.ClientID %>">Phone</label>
-            <asp:TextBox ID="txtPhone" runat="server" CssClass="form-control" ValidationGroup="ProfileForm" />
-        </div>
-
         <asp:Button ID="btnSaveProfile" runat="server" Text="Save changes" CssClass="btn"
                     ValidationGroup="ProfileForm" OnClick="btnSaveProfile_Click" />
     </div>
 
-    <div class="form-card" style="margin-top:1.5rem;">
+    <div class="form-card" style="margin:0; flex:1; min-width:300px; max-width:100%;">
         <h3>Change password</h3>
         <asp:Literal ID="litPasswordMessage" runat="server" />
         <asp:ValidationSummary ID="valPasswordSummary" runat="server" ValidationGroup="PasswordForm"
@@ -43,13 +39,23 @@
 
         <div class="form-field">
             <label for="<%= txtCurrentPassword.ClientID %>">Current password</label>
-            <asp:TextBox ID="txtCurrentPassword" runat="server" CssClass="form-control" TextMode="Password" ValidationGroup="PasswordForm" />
+            <div class="pwd-container">
+                <asp:TextBox ID="txtCurrentPassword" runat="server" CssClass="form-control" TextMode="Password" ValidationGroup="PasswordForm" style="width:100%;" />
+                <button type="button" class="pwd-toggle" onclick="togglePassword(this)" aria-label="Toggle password visibility">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
             <asp:RequiredFieldValidator ID="rfvCurrentPassword" runat="server" ControlToValidate="txtCurrentPassword"
                 ValidationGroup="PasswordForm" CssClass="field-error" Display="Dynamic" ErrorMessage="Current password is required." />
         </div>
         <div class="form-field">
             <label for="<%= txtNewPassword.ClientID %>">New password</label>
-            <asp:TextBox ID="txtNewPassword" runat="server" CssClass="form-control" TextMode="Password" ValidationGroup="PasswordForm" />
+            <div class="pwd-container">
+                <asp:TextBox ID="txtNewPassword" runat="server" CssClass="form-control" TextMode="Password" ValidationGroup="PasswordForm" style="width:100%;" />
+                <button type="button" class="pwd-toggle" onclick="togglePassword(this)" aria-label="Toggle password visibility">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
             <span class="form-hint">At least 8 characters.</span>
             <asp:RequiredFieldValidator ID="rfvNewPassword" runat="server" ControlToValidate="txtNewPassword"
                 ValidationGroup="PasswordForm" CssClass="field-error" Display="Dynamic" ErrorMessage="New password is required." />
@@ -59,7 +65,12 @@
         </div>
         <div class="form-field">
             <label for="<%= txtConfirmNewPassword.ClientID %>">Confirm new password</label>
-            <asp:TextBox ID="txtConfirmNewPassword" runat="server" CssClass="form-control" TextMode="Password" ValidationGroup="PasswordForm" />
+            <div class="pwd-container">
+                <asp:TextBox ID="txtConfirmNewPassword" runat="server" CssClass="form-control" TextMode="Password" ValidationGroup="PasswordForm" style="width:100%;" />
+                <button type="button" class="pwd-toggle" onclick="togglePassword(this)" aria-label="Toggle password visibility">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+            </div>
             <asp:RequiredFieldValidator ID="rfvConfirmNewPassword" runat="server" ControlToValidate="txtConfirmNewPassword"
                 ValidationGroup="PasswordForm" CssClass="field-error" Display="Dynamic" ErrorMessage="Please confirm your new password." />
             <asp:CompareValidator ID="cvNewPasswordMatch" runat="server" ControlToValidate="txtConfirmNewPassword"
@@ -69,5 +80,6 @@
 
         <asp:Button ID="btnChangePassword" runat="server" Text="Change password" CssClass="btn"
                     ValidationGroup="PasswordForm" OnClick="btnChangePassword_Click" />
+    </div>
     </div>
 </asp:Content>

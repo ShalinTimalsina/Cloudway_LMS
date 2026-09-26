@@ -17,7 +17,11 @@
             <asp:Button ID="btnCreateQuiz" runat="server" Text="Create New Quiz" CssClass="btn" OnClick="btnCreateQuiz_Click" CausesValidation="false" style="margin-bottom:20px;" />
             <asp:GridView ID="gvQuizzes" runat="server" AutoGenerateColumns="false" CssClass="table-admin" DataKeyNames="QuizID" OnRowCommand="gvQuizzes_RowCommand">
                 <Columns>
-                    <asp:BoundField DataField="Title" HeaderText="Title" />
+                    <asp:TemplateField HeaderText="Title">
+                        <ItemTemplate>
+                            <a href="<%# ResolveUrl("~/Member/Quiz.aspx?id=") + Eval("QuizID") %>" style="font-weight: 500;" target="_blank"><%# Eval("Title") %></a>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField DataField="PassingScore" HeaderText="Pass %" />
                     <asp:TemplateField HeaderText="Published">
                         <ItemTemplate><%# (bool)Eval("IsPublished") ? "Yes" : "No" %></ItemTemplate>
@@ -34,7 +38,7 @@
     </div>
 
     <div id="quizEditorPanel" runat="server" visible="false" style="max-width:800px;">
-        <div class="admin-panel">
+        <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
             <h3>Quiz Settings</h3>
             <div class="form-field">
                 <label>Quiz Title</label>

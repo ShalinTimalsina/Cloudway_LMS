@@ -35,6 +35,8 @@ namespace CloudWay_LMS.Pages
             private set { ViewState["VideoUrl"] = value; } 
         }
 
+        protected string BreadcrumbTitle { get; set; }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -72,6 +74,7 @@ namespace CloudWay_LMS.Pages
 
             litCourseTitle.Text = Server.HtmlEncode(course.Title);
             litTitle.Text = Server.HtmlEncode(lesson.Title);
+            BreadcrumbTitle = Server.HtmlEncode(lesson.Title);
             litMeta.Text = "";
 
             if (!hasAccess)
@@ -88,7 +91,7 @@ namespace CloudWay_LMS.Pages
 
             // See the HTML-encoding note in the markup: lesson content is
             // admin-authored only, so it's rendered as-is, not encoded.
-            litContent.Text = lesson.Content;
+            litContent.Text = "<div style=\"background: white; padding: 2.5rem 3rem; border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 2rem; border: 1px solid var(--border); font-size: 1.1rem; line-height: 1.7; color: var(--text);\">" + lesson.Content + "</div>";
 
             if (!string.IsNullOrWhiteSpace(lesson.VideoUrl))
             {
@@ -134,6 +137,15 @@ namespace CloudWay_LMS.Pages
             if (index < all.Count - 1)
             {
                 lnkNext.NavigateUrl = ResolveUrl("~/Pages/LessonDetails.aspx?id=" + all[index + 1].LessonID);
+                lnkNext.Text = "Next Lesson &rarr;";
+                lnkNext.CssClass = "btn btn-outline";
+                lnkNext.Visible = true;
+            }
+            else
+            {
+                lnkNext.NavigateUrl = ResolveUrl("~/Pages/CourseDetails.aspx?id=" + CourseId);
+                lnkNext.Text = "Course Overview &rarr;";
+                lnkNext.CssClass = "btn"; // Solid button to indicate completion
                 lnkNext.Visible = true;
             }
         }

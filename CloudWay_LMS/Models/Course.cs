@@ -19,7 +19,7 @@ namespace CloudWay_LMS.Models
         // ---- Joined / derived values, NOT stored in the Courses table ----
         public string     CategoryName   { get; set; }   // JOIN Categories
         public string     CreatedByName  { get; set; }   // JOIN Users
-        public int        EnrolmentCount { get; set; }   // COUNT aggregate
+        public int        EnrollmentCount { get; set; }   // COUNT aggregate
         public List<Tag>  Tags           { get; set; }   // loaded separately via TagDAL.SelectByCourse
 
         // Duration removed per schema.

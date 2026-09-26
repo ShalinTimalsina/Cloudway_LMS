@@ -11,7 +11,7 @@ namespace CloudWay_LMS.Member
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            Response.Redirect("~/Member/MyLearning.aspx");
         }
     }
 }

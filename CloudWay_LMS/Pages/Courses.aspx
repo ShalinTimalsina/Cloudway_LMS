@@ -2,21 +2,27 @@
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumb-bar">
+        <a href="<%= ResolveUrl("~/Pages/Default.aspx") %>">Home</a>
+        <span class="breadcrumb-separator"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+        <span class="breadcrumb-current">All Courses</span>
+    </div>
+
     <h1 class="page-title">Courses</h1>
     <p class="page-subtitle">Filter by category or search by keyword.</p>
 
-    <div class="admin-panel" style="margin-bottom:1.5rem;">
-        <div class="form-field" style="display:inline-block; width:220px; margin-right:1rem;">
+    <div class="card" style="padding:1.5rem; margin-bottom:2rem; display:flex; flex-direction:row; align-items:flex-end; gap:1.5rem; flex-wrap:wrap;">
+        <div class="form-field" style="margin:0; flex:1; min-width:200px;">
             <label for="<%= ddlCategory.ClientID %>">Category</label>
             <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-control"
                               AutoPostBack="true" OnSelectedIndexChanged="Filter_Changed" />
         </div>
-        <div class="form-field" style="display:inline-block; width:260px; margin-right:1rem;">
+        <div class="form-field" style="margin:0; flex:2; min-width:250px;">
             <label for="<%= txtSearch.ClientID %>">Search</label>
             <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" placeholder="Keyword..." />
         </div>
-        <asp:Button ID="btnSearch" runat="server" Text="Search" CssClass="btn"
-                    OnClick="Filter_Changed" style="vertical-align:bottom;" />
+        <asp:Button ID="btnSearch" runat="server" Text="Search" CssClass="btn" OnClick="Filter_Changed" style="margin:0;" />
     </div>
 
     <asp:PlaceHolder ID="phTagFilter" runat="server" Visible="false">
@@ -29,7 +35,7 @@
     <asp:Repeater ID="rptCourses" runat="server">
         <HeaderTemplate><div class="card-grid"></HeaderTemplate>
         <ItemTemplate>
-            <article class="card">
+            <article class="card card-clickable" onclick="window.location.href='<%# ResolveUrl("~/Pages/CourseDetails.aspx?id=") + Eval("CourseID") %>';">
                 <img class="card-thumb" src="<%# ResolveUrl((string)Eval("ThumbnailOrDefault")) %>" alt="" />
                 <div class="card-body">
                     <span class="badge"><%# Eval("CategoryName") %></span>

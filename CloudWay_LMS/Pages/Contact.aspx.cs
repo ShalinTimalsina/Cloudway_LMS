@@ -13,11 +13,17 @@ namespace CloudWay_LMS.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Pre-fill for a logged-in visitor — one less thing to type,
-            // and it's the same info AuthBLL already has in Session.
-            if (!IsPostBack && AuthBLL.IsLoggedIn)
+            if (!IsPostBack)
             {
-                txtName.Text = AuthBLL.CurrentUserName;
+                if (AuthBLL.IsLoggedIn)
+                {
+                    txtName.Text = AuthBLL.CurrentUserName;
+                }
+                
+                if (!string.IsNullOrEmpty(Request.QueryString["subject"]))
+                {
+                    txtSubject.Text = Request.QueryString["subject"];
+                }
             }
         }
 

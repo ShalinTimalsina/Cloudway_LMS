@@ -153,8 +153,14 @@ namespace CloudWay_LMS.Admin
                 }
                 catch (ValidationException vex)
                 {
-                    // e.g. "This course still has learners enrolled..."
-                    litMessage.Text = "<div class=\"alert alert-error\">" + Server.HtmlEncode(vex.Message) + "</div>";
+                    if (vex.Message.Contains("automatically Unpublished"))
+                    {
+                        litMessage.Text = "<div class=\"alert alert-success\">" + Server.HtmlEncode(vex.Message) + "</div>";
+                    }
+                    else
+                    {
+                        litMessage.Text = "<div class=\"alert alert-error\">" + Server.HtmlEncode(vex.Message) + "</div>";
+                    }
                 }
                 BindGrid();
             }

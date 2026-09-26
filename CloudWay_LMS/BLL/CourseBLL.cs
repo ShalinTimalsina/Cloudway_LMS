@@ -124,7 +124,20 @@ namespace CloudWay_LMS.BLL
             catch (SqlException sqlEx)
             {
                 ValidationException vex = SqlErrorHelper.Translate(
-                    sqlEx, fkMessage: "This course still has learners enrolled and cannot be deleted. Unpublish it instead.");
+                    sqlEx, fkMessage: "FK_ERROR");
+
+                if (vex != null && vex.Message == "FK_ERROR")
+                {
+                    Course c = GetById(courseId);
+                    if (c != null && c.IsPublished)
+                    {
+                        c.IsPublished = false;
+                        _dal.Update(c);
+                        throw new ValidationException("This course has active learners so it cannot be permanently deleted. It has been automatically Unpublished instead.");
+                    }
+                    throw new ValidationException("This course has active learners so it cannot be permanently deleted. (It is currently unpublished).");
+                }
+
                 if (vex != null) throw vex;
 
                 ErrorLogger.Log(sqlEx, "CourseBLL.Remove");

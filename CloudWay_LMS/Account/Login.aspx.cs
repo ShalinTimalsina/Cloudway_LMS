@@ -18,18 +18,10 @@ namespace CloudWay_LMS.Account
             {
                 var u = new AuthBLL().Login(txtEmail.Text, txtPassword.Text);
 
-                // Open redirect guard: only follow ReturnUrl if it's a LOCAL path.
-                // Without this check, a link like Login.aspx?ReturnUrl=https://evil.example
-                // would send a just-authenticated user straight to a phishing site.
-                string returnUrl = Request.QueryString["ReturnUrl"];
-                if (!string.IsNullOrEmpty(returnUrl) && Server.UrlDecode(returnUrl).StartsWith("/"))
-                    Response.Redirect(returnUrl);
-                else
-                    
                 if (u.RoleID == 1)
-                    Response.Redirect("~/Admin/ManageCategories.aspx");
+                    Response.Redirect("~/Admin/Dashboard.aspx");
                 else
-                    Response.Redirect("~/Member/MyLearning.aspx");
+                    Response.Redirect("~/Pages/Default.aspx");
             }
             catch (ValidationException vex)
             {
@@ -38,4 +30,6 @@ namespace CloudWay_LMS.Account
         }
     }
 }
+
+
 

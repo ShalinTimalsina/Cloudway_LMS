@@ -144,7 +144,7 @@ namespace CloudWay_LMS.Data_Access_Layer
             // LastLoginAt removed per schema match requirements.
         }
 
-        /// <summary>Soft delete — keeps enrolment/attempt history intact. Prefer this over a hard DELETE.</summary>
+        /// <summary>Soft delete — keeps enrollment/attempt history intact. Prefer this over a hard DELETE.</summary>
         public bool Deactivate(int userId)
         {
             const string sql = "UPDATE Users SET IsActive = 0 WHERE UserID = @UserID;";

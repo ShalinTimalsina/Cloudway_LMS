@@ -36,7 +36,7 @@
         <asp:Repeater ID="rptFeatured" runat="server">
             <HeaderTemplate><div class="card-grid"></HeaderTemplate>
             <ItemTemplate>
-                <article class="card">
+                <article class="card card-clickable" onclick="window.location.href='<%# ResolveUrl("~/Pages/CourseDetails.aspx?id=") + Eval("CourseID") %>';">
                     <img class="card-thumb" src="<%# ResolveUrl((string)Eval("ThumbnailOrDefault")) %>" alt="" />
                     <div class="card-body">
                         <span class="badge"><%# Eval("CategoryName") %></span>

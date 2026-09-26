@@ -43,7 +43,7 @@ namespace CloudWay_LMS.BLL
 
             Course course = _courseDal.SelectById(courseId);
             if (course == null || !course.IsPublished)
-                throw new ValidationException("This course is not available for enrolment.");
+                throw new ValidationException("This course is not available for enrollment.");
 
             if (_dal.IsEnrolled(userId, courseId))
                 throw new ValidationException("You are already enrolled in this course.");
@@ -65,13 +65,13 @@ namespace CloudWay_LMS.BLL
 
         public void UpdateProgress(int enrollmentId, decimal progressPercent)
         {
-            if (enrollmentId <= 0) throw new ValidationException("Invalid enrolment.");
+            if (enrollmentId <= 0) throw new ValidationException("Invalid enrollment.");
             if (progressPercent < 0 || progressPercent > 100)
                 throw new ValidationException("Progress must be between 0 and 100.");
 
             bool markCompleted = progressPercent >= 100;
             if (!_dal.UpdateProgress(enrollmentId, progressPercent, markCompleted))
-                throw new ValidationException("The enrolment no longer exists.");
+                throw new ValidationException("The enrollment no longer exists.");
         }
 
         /// <summary>
@@ -87,13 +87,13 @@ namespace CloudWay_LMS.BLL
         /// </summary>
         public void Unenroll(int userId, int enrollmentId)
         {
-            if (enrollmentId <= 0) throw new ValidationException("Invalid enrolment.");
+            if (enrollmentId <= 0) throw new ValidationException("Invalid enrollment.");
 
             Enrollment enrollment = _dal.SelectByUser(userId).FirstOrDefault(e => e.EnrollmentID == enrollmentId);
             if (enrollment == null)
-                throw new ValidationException("This enrolment doesn't belong to you, or no longer exists.");
+                throw new ValidationException("This enrollment doesn't belong to you, or no longer exists.");
 
-            if (!_dal.Delete(enrollmentId)) throw new ValidationException("The enrolment no longer exists.");
+            if (!_dal.Delete(enrollmentId)) throw new ValidationException("The enrollment no longer exists.");
         }
 
         // ====================================================================

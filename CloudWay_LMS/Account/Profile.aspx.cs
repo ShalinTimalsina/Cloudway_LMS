@@ -37,9 +37,21 @@ namespace CloudWay_LMS.Account
         {
             try
             {
-                new UserBLL().UpdateProfile(AuthBLL.CurrentUserId, txtFullName.Text, txtPhone.Text);
+                if (txtFullName == null) throw new Exception("DEBUG: txtFullName is null");
+                if (litProfileMessage == null) throw new Exception("DEBUG: litProfileMessage is null");
+                
+                string newName = txtFullName.Text;
+                if (newName == null) throw new Exception("DEBUG: txtFullName.Text is null");
+
+                int userId = AuthBLL.CurrentUserId;
+                
+                UserBLL bll = new UserBLL();
+                if (bll == null) throw new Exception("DEBUG: bll is null");
+
+                bll.UpdateProfile(userId, newName, "");
+                
                 litProfileMessage.Text = "<div class=\"alert alert-success\">Profile updated.</div>";
-                AuthBLL.RefreshSessionName(txtFullName.Text.Trim());
+                AuthBLL.RefreshSessionName(newName.Trim());
             }
             catch (ValidationException vex)
             {

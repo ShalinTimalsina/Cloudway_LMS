@@ -44,7 +44,7 @@ namespace CloudWay_LMS.Member
             }
             catch (ValidationException)
             {
-                // Enrolment already gone, or didn't belong to this user —
+                // Enrollment already gone, or didn't belong to this user —
                 // either way, the grid below is about to re-show reality.
             }
 

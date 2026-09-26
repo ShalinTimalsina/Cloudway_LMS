@@ -16,7 +16,7 @@ namespace CloudWay_LMS.Account
         {
             try
             {
-                new AuthBLL().Register(txtFullName.Text, txtEmail.Text, txtPassword.Text, txtPhone.Text);
+                new AuthBLL().Register(txtFullName.Text, txtEmail.Text, txtPassword.Text, "");
                 new AuthBLL().Login(txtEmail.Text, txtPassword.Text); // sign them straight in
                 Response.Redirect("~/Member/MyLearning.aspx");
             }

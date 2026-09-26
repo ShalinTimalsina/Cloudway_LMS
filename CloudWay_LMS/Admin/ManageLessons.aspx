@@ -5,7 +5,7 @@
     <h1 class="page-title">Lessons</h1>
     <asp:Literal ID="litMessage" runat="server" />
 
-    <div class="admin-panel">
+    <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
         <div class="form-field" style="max-width:400px;">
             <label for="<%= ddlCourse.ClientID %>">Course</label>
             <asp:DropDownList ID="ddlCourse" runat="server" CssClass="form-control" CausesValidation="false"
@@ -14,7 +14,7 @@
     </div>
 
     <asp:PlaceHolder ID="phCourseTools" runat="server" Visible="false">
-        <div class="admin-panel">
+        <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
             <asp:HiddenField ID="hfLessonId" runat="server" Value="0" />
             <h3><asp:Literal ID="litFormTitle" runat="server" Text="Add a lesson" /></h3>
             <asp:ValidationSummary ID="valLessonSummary" runat="server" ValidationGroup="LessonForm"
@@ -48,7 +48,7 @@
         </div>
 
         <asp:PlaceHolder ID="phResources" runat="server" Visible="false">
-            <div class="admin-panel">
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
                 <h3>Resources for "<asp:Literal ID="litCurrentLessonTitle" runat="server" />"</h3>
                 <p class="form-hint">Code samples, slide decks, cheat sheets, datasets - anything a learner
                     should be able to download for this lesson. Save the lesson itself first; resources attach
@@ -97,7 +97,7 @@
             </div>
         </asp:PlaceHolder>
 
-        <div class="admin-panel">
+        <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
             <asp:GridView ID="gvLessons" runat="server" AutoGenerateColumns="false" CssClass="table-admin"
                           DataKeyNames="LessonID" OnRowCommand="gvLessons_RowCommand">
                 <Columns>

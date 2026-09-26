@@ -21,6 +21,12 @@ namespace CloudWay_LMS.Member
             }
         }
 
+        protected int CourseId
+        {
+            get { return ViewState["CourseId"] != null ? (int)ViewState["CourseId"] : 0; }
+            set { ViewState["CourseId"] = value; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // Page-level guard, same idea as Admin.master's check but for any
@@ -63,6 +69,9 @@ namespace CloudWay_LMS.Member
                 if (litTime != null) litTime.Text = "| Time limit: " + quiz.TimeLimitMinutes.Value + " mins";
             }
 
+            CourseId = quiz.CourseID;
+            lnkContinueCourse.NavigateUrl = ResolveUrl("~/Pages/CourseDetails.aspx?id=" + CourseId);
+
             List<Question> questions = new QuizBLL().GetQuestionsWithOptions(QuizId);
             rptQuestions.DataSource = questions;
             rptQuestions.DataBind();
@@ -85,11 +94,11 @@ namespace CloudWay_LMS.Member
             }
             else
             {
-                CheckBoxList cbl = (CheckBoxList)e.Item.FindControl("cblOptions");
-                cbl.DataSource = q.Options;
-                cbl.DataTextField = "OptionText";
-                cbl.DataValueField = "OptionID";
-                cbl.DataBind();
+                RadioButtonList rbl = (RadioButtonList)e.Item.FindControl("rblOptions");
+                rbl.DataSource = q.Options;
+                rbl.DataTextField = "OptionText";
+                rbl.DataValueField = "OptionID";
+                rbl.DataBind();
             }
         }
 
@@ -125,8 +134,8 @@ namespace CloudWay_LMS.Member
                 }
                 else
                 {
-                    CheckBoxList cbl = (CheckBoxList)item.FindControl("cblOptions");
-                    foreach (ListItem li in cbl.Items)
+                    RadioButtonList rbl = (RadioButtonList)item.FindControl("rblOptions");
+                    foreach (ListItem li in rbl.Items)
                         if (li.Selected) selected.Add(int.Parse(li.Value));
                 }
 
@@ -148,6 +157,11 @@ namespace CloudWay_LMS.Member
             {
                 litMessage.Text = "<div class=\"alert alert-error\">" + Server.HtmlEncode(vex.Message) + "</div>";
             }
+        }
+
+        protected void btnRetake_Click(object sender, EventArgs e)
+        {
+            Response.Redirect(Request.RawUrl);
         }
     }
 }
